@@ -1,11 +1,10 @@
-#define BOOST_TEST_MODULE PolyominoState test
 #include <boost/test/unit_test.hpp>
 #include "PolyominoState.h"
 #include <vector>
 
 using namespace TetrisAI;
 
-BOOST_AUTO_TEST_CASE(constructors_test) {
+BOOST_AUTO_TEST_CASE(polyominostate_constructors_test) {
 	std::vector<unsigned int> c0(std::vector<unsigned int> {2, 7});
 	PolyominoState p0(c0);
 	std::vector<unsigned int> p0Content(p0.getTranslatedState(0));
@@ -17,7 +16,7 @@ BOOST_AUTO_TEST_CASE(constructors_test) {
 	BOOST_CHECK_THROW(PolyominoState(std::vector<unsigned int> {1, 0}), std::invalid_argument);
 }
 
-BOOST_AUTO_TEST_CASE(translation_test) {
+BOOST_AUTO_TEST_CASE(polyominostate_translation_test) {
 	std::vector<unsigned int> content(std::vector<unsigned int> {2, 7, 1});
 	PolyominoState piece(content);
 
@@ -29,7 +28,7 @@ BOOST_AUTO_TEST_CASE(translation_test) {
 	BOOST_CHECK_EQUAL_COLLECTIONS(t3.begin(), t3.end(), expected3.begin(), expected3.end());
 }
 
-BOOST_AUTO_TEST_CASE(rotation_test) {
+BOOST_AUTO_TEST_CASE(polyominostate_rotation_test) {
 	// Tests for each tetramino
 	std::vector<std::vector<std::vector<unsigned int>>> tetraminos({
 		{ {2, 7}, {1, 3, 1}, {7, 2}, {2, 3, 2} }, // T

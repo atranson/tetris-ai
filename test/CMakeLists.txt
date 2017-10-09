@@ -7,7 +7,11 @@ include_directories (
 
 add_definitions (-DBOOST_TEST_DYN_LINK)
 
-add_executable (AIUnitTest PolyominoStateTest.cpp)
+add_executable (AIUnitTest 
+	main.cpp
+	PolyominoStateTest.cpp
+	PolyominoTest.cpp
+)
 target_link_libraries (AIUnitTest
 	TetrisAI
 	${Boost_FILESYSTEM_LIBRARY}
