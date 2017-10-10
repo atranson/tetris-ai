@@ -9,6 +9,9 @@ namespace TetrisAI {
 	struct Transformation {
 		int translation;
 		int rotation;
+
+		Transformation() : translation(0), rotation(0) {}
+		Transformation(int t, int r) : translation(t), rotation(r) {}
 	};
 
 	class Polyomino {
