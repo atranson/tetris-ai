@@ -40,6 +40,7 @@ namespace TetrisAI {
 		short topHeight;
 
 		int findFittingRow(const std::vector<unsigned int>& piece) const;
+		bool isPieceTranslationValid(const std::vector<unsigned int>& piece) const;
 		void removeRow(unsigned int index);
 	};
 

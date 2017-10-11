@@ -30,6 +30,12 @@ namespace TetrisAI {
 	{
 		// in the following, piece.size() represents the height of the piece as a PolyominoState is guaranteed to have all its rows non empty
 		const std::vector<unsigned int> piece(polyomino.getTransformedPiece(transformation));
+		
+		if (!isPieceTranslationValid(piece))
+		{
+			throw std::invalid_argument("The piece translation makes it fall out of the grid");
+		}
+		
 		MoveResult result;
 		result.landingRow = findFittingRow(piece);
 
@@ -54,6 +60,7 @@ namespace TetrisAI {
 				result.pieceVanishedBlocks += activeBitsCount(piece[h]);
 				removeRow(currentRow);
 				result.linesCleared++;
+				topHeight--;
 			}
 		}
 
@@ -82,8 +89,21 @@ namespace TetrisAI {
 			landingRow = (collisionSum == 0) ? landingRow : landingRow + 1;
 		}
 
-		// THEN: we check if it's a game over situation, if it is we return -1, else we return the lowest row were the piece would fit
+		// THEN: we check if it's a game over situation, if it is we return -1, else we return the lowest row where the piece would fit
 		return (landingRow + piece.size() > getHeight()) ? -1 : landingRow;
+	}
+
+	bool Grid::isPieceTranslationValid(const std::vector<unsigned int>& piece) const
+	{
+		unsigned int maxValue(getCompleteLine()); // highest possible bit considering the width of the grid
+		for (auto& rowValue : piece)
+		{
+			if (rowValue > maxValue)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	const std::vector<unsigned int>& Grid::getContent() const
@@ -123,7 +143,10 @@ namespace TetrisAI {
 	int Grid::columnTransitions() const
 	{
 		int output(0);
-		output += activeBitsCount(content[getTopHeight() - 1] ^ 0); // Upper boundary of the grid
+		if(topHeight > 0) 
+		{
+			output += activeBitsCount(content[getTopHeight() - 1] ^ 0); // Upper boundary of the grid
+		}
 		output += activeBitsCount(getCompleteLine() ^ content[0]); // Lower boundary of the grid
 
 		for (int row = 0; row < getTopHeight() - 1; row++)
