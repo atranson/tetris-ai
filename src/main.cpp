@@ -1,6 +1,7 @@
 #include <iostream>
 #include <time.h> 
 #include "GameState.h"
+#include "GridView.h"
 #include "DellacherieHeuristic.h"
 #include "HeuristicStrategy.h"
 #include <SFML/Graphics.hpp>
@@ -33,6 +34,7 @@ int main()
 
 	int squareSize(20), innerBorder(1), outerBorder(2);
 	sf::RenderWindow window(sf::VideoMode((squareSize + innerBorder) * width - innerBorder + outerBorder * 2, (squareSize + innerBorder) * height - innerBorder + outerBorder * 2), "Tetris AI");
+	GridView gridView(sf::Vector2u(squareSize, squareSize), outerBorder, innerBorder, width, height);
 
 	std::vector<Polyomino> tetraminos;
 	initializeTetraminoList(tetraminos);
@@ -56,11 +58,14 @@ int main()
 		Transformation chosenMove(strategy.decideMove(gs, currentPolyomino));
 
 		gs.play(currentPolyomino, chosenMove);
-		std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPieceIndex << std::endl;
-		system("pause"); 
-		
+
+		std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPieceIndex << std::endl;		
+		gridView.refreshGrid(gs.getGridContent());
 		window.clear(sf::Color(255, 255, 255));
+		window.draw(gridView);
 		window.display();
+
+		system("pause");
 	}
 
 	return 0;
