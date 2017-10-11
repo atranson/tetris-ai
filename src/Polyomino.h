@@ -12,6 +12,7 @@ namespace TetrisAI {
 
 		Transformation() : translation(0), rotation(0) {}
 		Transformation(int t, int r) : translation(t), rotation(r) {}
+		Transformation(const Transformation & original) : translation(original.translation), rotation(original.rotation) {}
 	};
 
 	class Polyomino {
