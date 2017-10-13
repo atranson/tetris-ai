@@ -39,9 +39,9 @@ namespace TetrisAI {
 		MoveResult result;
 		result.landingRow = findFittingRow(piece);
 
+		// Could not integrate the piece in the grid
 		if (result.landingRow == -1)
 		{
-			// Could not integrate the piece in the grid
 			result.gameOver = true;
 			return result;
 		}
@@ -50,6 +50,7 @@ namespace TetrisAI {
 		// If it is ok: we merge the piece and the grid and clear the complete lines along the way
 		topHeight = (landingTopHeight > topHeight) ? landingTopHeight : topHeight;
 
+		// Browse the rows of the grid that must change and clear complete lines if needed
 		for (int h = 0; h < piece.size(); h++)
 		{
 			int currentRow = result.landingRow + h - result.linesCleared;
@@ -143,12 +144,15 @@ namespace TetrisAI {
 	int Grid::columnTransitions() const
 	{
 		int output(0);
+
+		// Transition at the upper and lower boundaries of the non-empty grid
 		if(topHeight > 0) 
 		{
 			output += activeBitsCount(content[getTopHeight() - 1] ^ 0); // Upper boundary of the grid
 		}
 		output += activeBitsCount(getCompleteLine() ^ content[0]); // Lower boundary of the grid
 
+		// Transition inside the grid
 		for (int row = 0; row < getTopHeight() - 1; row++)
 		{
 			output += activeBitsCount(content[row] ^ content[row + 1]);
@@ -165,9 +169,11 @@ namespace TetrisAI {
 
 		for (int row = 0; row < getTopHeight(); row++)
 		{
+			// Transitions at the boundaries of the grid
 			if (!(content[row] & highestOrderBit)) { output++; } // Left boundary of the grid (add 1 if the most left bit is 0)
 			if (!(content[row] & 1)) { output++; } // Right boundary of the grid (add 1 if the most right bit is 0)
 
+			// Transitions inside the grid
 			for (int col = 0; col < gridWidth - 1; col++)
 			{
 				output += ((content[row] >> col) & 1) ^ ((content[row] >> (col + 1)) & 1);
@@ -196,30 +202,40 @@ namespace TetrisAI {
 
 	int Grid::wells() const
 	{
+		// wellMask allows to filter rows to keep only the bits of 3 columns (or 2 if we are next to the borders of the grid)
+		// wellPattern indicates what should be the value of the filtering via wellMask if the pattern describing the top of a well is found
+		//
+		// Example 1.	with 3 and 2 as values, we can search for wells on the right side of the grid as it would match rows ending with 10
+		// Example 2.	with 7 and 5 as values, we can search for wells in the second column as it would match rows ending with 101
 		int output(0), wellMask(3), wellPattern(2), gridWidth(getWidth());
 
 		for (int col = 0; col < gridWidth; col++)
 		{
 			for (int row = getTopHeight() - 1; row >= 0; row--)
 			{
+				// Check if the pattern is respected for the columns filtered by the mask
 				if ((content[row] & wellMask) == wellPattern)
 				{
 					output += 1 + emptyBlocksDown(row - 1, col);
 				}
 			}
 
+			// Modify the pattern and mask for the next column
 			if (col == 0)
 			{
+				// If it was the first step, we have to change the values
 				wellMask = 7;
 				wellPattern = 5;
 			}
 			else if (col == gridWidth - 2)
 			{
+				// If we reached, the end of the grid, we have to change the values
 				wellMask = (1 << (gridWidth - 1)) + (1 << (gridWidth - 2)); // e.g 512 + 256 if W=10
 				wellPattern = 1 << (gridWidth - 2); // e.g 256 if W=10
 			}
 			else
 			{
+				// If we are going from one basic case to another, we just shift values
 				wellMask <<= 1;
 				wellPattern <<= 1;
 			}
