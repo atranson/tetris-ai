@@ -10,12 +10,15 @@ namespace TetrisAI {
 	public:
 		PolyominoState(std::vector<unsigned int> content);
 		PolyominoState(const PolyominoState & original) : content(original.content), width(original.width) {}
+		
+		/// <summary>Translates a copy of the underlying raw content and returns it</summary>
 		std::vector<unsigned int> getTranslatedState(int translation) const;
-		int getHeight() const;
-		int getWidth() const;
-		// Clockwise 90 degrees rotation
+		
+		/// <summary>Performs a lockwise 90 degrees rotation of the content and returns a new PolyominoState with the resulting content</summary>
 		PolyominoState getRotatedState();
 
+		int getHeight() const;
+		int getWidth() const;
 		bool isEqual(PolyominoState const& b) const;
 
 	private:

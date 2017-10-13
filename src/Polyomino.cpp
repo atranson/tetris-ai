@@ -5,8 +5,10 @@ namespace TetrisAI {
 
 	Polyomino::Polyomino(std::vector<unsigned int> baseContent)
 	{
+		// Stores the base state
 		rotatedPieces.push_back(PolyominoState(baseContent));
 
+		// Rotates the base state until we find it again
 		int rotations(0);
 		PolyominoState rotatedState(rotatedPieces[0].getRotatedState());
 		while (!(rotatedState == rotatedPieces[0]) && rotations < 4)
@@ -29,7 +31,7 @@ namespace TetrisAI {
 
 	const std::vector<unsigned int> Polyomino::getTransformedPiece(Transformation t) const
 	{
-		return rotatedPieces[t.rotation % rotatedPieces.size()].getTranslatedState(t.translation);
+		return getRotatedPiece(t.rotation).getTranslatedState(t.translation);
 	}
 
 	unsigned int Polyomino::getRotationCount() const

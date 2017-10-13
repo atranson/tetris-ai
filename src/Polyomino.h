@@ -17,12 +17,19 @@ namespace TetrisAI {
 
 	class Polyomino {
 	public:
+		/// <summary>Instantiates a Polyomino based on one of its possible state</summary>
+		/// <param name="baseContent">Values defining a base piece on which the Polyomino and its rotation can be built</param>
 		Polyomino(std::vector<unsigned int> baseContent);
+
+		/// <summary>Retrieve a substate of the Polyomino corresponding to a certain number of rotations</summary>
 		const PolyominoState& getRotatedPiece(int rotation) const;
+
+		/// <summary>Applies a transformation to the Polyomino and returns the resulting raw content</summary>
 		const std::vector<unsigned int> getTransformedPiece(Transformation t) const;
 		unsigned int getRotationCount() const;
 
 	private:
+		/// <summary>Stores all sub states of the polyomino: one for each possible rotation</summary>
 		std::vector<PolyominoState> rotatedPieces;
 	};
 }
