@@ -22,9 +22,9 @@ namespace TetrisAI {
 		return moveResult;
 	}
 
-	const Polyomino& GameState::getCurrentPolyomino() const
+	const Polyomino& GameState::getPlayedPolyomino() const
 	{
-		return *currentPolyomino;
+		return *playedPolyomino;
 	}
 
 	const Transformation& GameState::getPolyominoMove() const
@@ -35,7 +35,7 @@ namespace TetrisAI {
 	bool GameState::play(const Polyomino& polyomino, Transformation transformation)
 	{
 		// Reset state values
-		currentPolyomino = &polyomino;
+		playedPolyomino = &polyomino;
 		polyominoMove = transformation;
 		PolyominoState polyominoState(polyomino.getRotatedPiece(transformation.rotation));
 
