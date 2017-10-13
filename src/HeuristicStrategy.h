@@ -15,6 +15,7 @@ namespace TetrisAI {
 		virtual Transformation decideMove(const GameState& gs, const Polyomino& nextPolyomino);
 
 	private:
+		/// <summary>Heuristic that should be used to evaluate game states</summary>
 		Heuristic& heuristic;
 	};
 

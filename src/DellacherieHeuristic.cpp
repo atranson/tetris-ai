@@ -12,6 +12,8 @@ namespace TetrisAI {
 		Grid grid(gs.getGrid());
 		MoveResult moveResult(gs.getMoveResult());
 		float output(0), topMarginMax, topMarginMin;
+
+		// Heuristic given by Pierre Dellacherie's algorithm
 		topMarginMin = grid.getHeight() + 1 - moveResult.landingRow;
 		topMarginMax = grid.getHeight() + 1 - (moveResult.landingRow + gs.getCurrentPolyomino().getRotatedPiece(gs.getPolyominoMove().rotation).getHeight() - 1);
 		output += (topMarginMin + topMarginMin) / 2;
