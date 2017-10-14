@@ -9,6 +9,7 @@ add_library (TetrisAI
 	Heuristic.cpp Heuristic.h
 	DellacherieHeuristic.cpp DellacherieHeuristic.h
 	HeuristicStrategy.cpp HeuristicStrategy.h
+	GameSequence.cpp GameSequence.h
 )
 
 add_executable (main main.cpp GridView.cpp GridView.h)
