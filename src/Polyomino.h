@@ -17,6 +17,10 @@ namespace TetrisAI {
 
 	class Polyomino {
 	public:
+		/// <summary>Helper to get the list of all possible Polyominos composed of a certain number of square</summary>
+		/// <param name="squares">Number of squares that should compose the polyominos</param>
+		static std::vector<Polyomino> getPolyominosList(unsigned int squares);
+
 		/// <summary>Instantiates a Polyomino based on one of its possible state</summary>
 		/// <param name="baseContent">Values defining a base piece on which the Polyomino and its rotation can be built</param>
 		Polyomino(std::vector<unsigned int> baseContent);

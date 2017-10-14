@@ -8,24 +8,6 @@
 
 using namespace TetrisAI;
 
-void initializeTetraminoList(std::vector<Polyomino>& list)
-{
-	if (list.size() != 0)
-	{
-		list.clear();
-	}
-	list.reserve(7);
-
-	Polyomino T({ 2, 7 }), J({ 1, 7 }), L({ 4, 7 }), O({ 3, 3 }), S({ 6, 3 }), Z({3, 6}), I({ 15 });
-	list.push_back(T);
-	list.push_back(I);
-	list.push_back(L);
-	list.push_back(J);
-	list.push_back(O);
-	list.push_back(S);
-	list.push_back(Z);
-}
-
 int main()
 {
 	srand(time(NULL));
@@ -36,8 +18,8 @@ int main()
 	sf::RenderWindow window(sf::VideoMode((squareSize + innerBorder) * width - innerBorder + outerBorder * 2, (squareSize + innerBorder) * height - innerBorder + outerBorder * 2), "Tetris AI");
 	GridView gridView(sf::Vector2u(squareSize, squareSize), outerBorder, innerBorder, width, height);
 
-	std::vector<Polyomino> tetraminos;
-	initializeTetraminoList(tetraminos);
+	int polyominoSquares(4);
+	std::vector<Polyomino> polyominos(Polyomino::getPolyominosList(polyominoSquares));
 	GameState gs(width, height);
 	DellacherieHeuristic chosenHeuristic;
 	HeuristicStrategy strategy(chosenHeuristic);
@@ -53,8 +35,8 @@ int main()
 			}
 		}
 
-		int currentPieceIndex = rand() % 7;
-		Polyomino currentPolyomino(tetraminos[currentPieceIndex]);
+		int currentPieceIndex = rand() % polyominos.size();
+		Polyomino currentPolyomino(polyominos[currentPieceIndex]);
 		Transformation chosenMove(strategy.decideMove(gs, currentPolyomino));
 
 		gs.play(currentPolyomino, chosenMove);
