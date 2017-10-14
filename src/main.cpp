@@ -39,12 +39,20 @@ int main()
 		Polyomino currentPolyomino(polyominos[currentPieceIndex]);
 		Transformation chosenMove(strategy.decideMove(gs, currentPolyomino));
 
-		gs.play(currentPolyomino, chosenMove);
+		if (chosenMove.translation != -1)
+		{
+			gs.play(currentPolyomino, chosenMove);
 
-		std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPieceIndex << std::endl;		
-		gridView.refreshGrid(gs.getGridContent());
-		window.clear(sf::Color(255, 255, 255));
-		window.draw(gridView);
+			std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPieceIndex << std::endl;
+			gridView.refreshGrid(gs.getGridContent());
+			window.clear(sf::Color(255, 255, 255));
+			window.draw(gridView);
+		}
+		else
+		{
+			std::cout << "Game over: could not place Piece #" << currentPieceIndex << std::endl;
+		}
+			
 		window.display();
 
 		system("pause");
