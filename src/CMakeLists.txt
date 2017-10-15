@@ -12,7 +12,14 @@ add_library (TetrisAI
 	GameSequence.cpp GameSequence.h
 )
 
-add_executable (main main.cpp GridView.cpp GridView.h)
+configure_file(../res/Roboto-Regular.ttf res/Roboto-Regular.ttf COPYONLY)
+
+add_executable (main 
+	main.cpp 
+	GridView.cpp GridView.h 
+	GameStatusView.cpp GameStatusView.h
+)
+
 #Find any version 2.X of SFML
 #See the FindSFML.cmake file for additional details and instructions
 find_package(SFML 2 REQUIRED graphics window system)

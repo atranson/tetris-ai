@@ -2,7 +2,7 @@
 
 const sf::Color GridView::outerBorderColor = sf::Color(0, 0, 0);
 const sf::Color GridView::innerBorderColor = sf::Color(128, 128, 128);
-const sf::Color GridView::fullTileColor = sf::Color(255, 0, 0);
+const sf::Color GridView::fullTileColor = sf::Color(16, 16, 16);
 const sf::Color GridView::emptyTileColor = sf::Color(255, 255, 255);
 
 GridView::GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned int innerBorderSize, unsigned int width, unsigned int height) : 
@@ -55,6 +55,16 @@ GridView::GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned
 			}
 		}
 	}
+
+	drawableBlockSize = sf::Vector2u(
+		(tileSize.x + innerBorderSize) * width - innerBorderSize + outerBorderSize * 2,
+		(tileSize.y + innerBorderSize) * height - innerBorderSize + outerBorderSize * 2
+	);
+}
+
+sf::Vector2u GridView::getBlockSize() const
+{
+	return drawableBlockSize;
 }
 
 void GridView::refreshGrid(const std::vector<unsigned int>& gridContent)

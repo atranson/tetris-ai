@@ -13,6 +13,7 @@ public:
 
 	GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned int innerBorderSize, unsigned int width, unsigned int height);
 	void refreshGrid(const std::vector<unsigned int>& gridContent);
+	sf::Vector2u getBlockSize() const;
 
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -23,6 +24,8 @@ private:
 	unsigned int height;
 	unsigned int outerBorderSize;
 	unsigned int innerBorderSize;
+
+	sf::Vector2u drawableBlockSize;
 };
 
 #endif

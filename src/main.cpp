@@ -1,6 +1,7 @@
 #include <iostream>
 #include "GameSequence.h"
 #include "GridView.h"
+#include "GameStatusView.h"
 #include "DellacherieHeuristic.h"
 #include "HeuristicStrategy.h"
 #include <SFML/Graphics.hpp>
@@ -11,11 +12,21 @@ using namespace TetrisAI;
 
 void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 {
-	int squareSize(20), innerBorder(1), outerBorder(2);
-	sf::RenderWindow window(sf::VideoMode((squareSize + innerBorder) * gameSequence.getGridWidth() - innerBorder + outerBorder * 2, (squareSize + innerBorder) * gameSequence.getGridHeight() - innerBorder + outerBorder * 2), "Tetris AI");
-	GridView gridView(sf::Vector2u(squareSize, squareSize), outerBorder, innerBorder, gameSequence.getGridWidth(), gameSequence.getGridHeight());
+	sf::Font font;
+	if (!font.loadFromFile("../res/Roboto-Regular.ttf"))
+	{
+		throw std::invalid_argument("Could not load font properly");
+	}
 
-	while (window.isOpen() && gameSequence.getStatus() != GameSequence::Status::GameOver)
+	int squareSize(20), innerBorder(1), outerBorder(2);
+	GridView gridView(sf::Vector2u(squareSize, squareSize), outerBorder, innerBorder, gameSequence.getGridWidth(), gameSequence.getGridHeight());
+	GameStatusView statsView(font, gameSequence.getGridWidth(), gameSequence.getGridHeight());
+
+	sf::Vector2u gridSize(gridView.getBlockSize());
+	sf::RenderWindow window(sf::VideoMode(240 + gridSize.x, gridSize.y), "Tetris AI");
+	statsView.setPosition(gridSize.x, 0);
+
+	while (window.isOpen())
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
@@ -27,11 +38,13 @@ void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 		}
 
 		gridView.refreshGrid(gameSequence.getGameState().getGridContent());
+		statsView.updateStatistics(gameSequence.getStats());
 		window.clear(sf::Color(255, 255, 255));
 		window.draw(gridView);
+		window.draw(statsView);
 		window.display();
 
-		if (refreshRate <= 1001)
+		if (refreshRate < 1001)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000 / refreshRate));
 		}
@@ -40,7 +53,7 @@ void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 
 int main()
 {
-	int height(20), width(10);
+	int height(10), width(10);
 	bool enableView(true);
 
 	int polyominoSquares(4);
