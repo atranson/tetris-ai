@@ -13,6 +13,7 @@ add_executable (AIUnitTest
 	PolyominoTest.cpp
 	GridTest.cpp
 	GridToolsTest.cpp
+	DecisionTreeNodeTest.cpp
 )
 target_link_libraries (AIUnitTest
 	TetrisAI

@@ -53,7 +53,7 @@ void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 
 int main()
 {
-	int height(10), width(10);
+	int height(20), width(10);
 	bool enableView(true);
 
 	int polyominoSquares(4);

@@ -9,6 +9,9 @@ add_library (TetrisAI
 	Heuristic.cpp Heuristic.h
 	DellacherieHeuristic.cpp DellacherieHeuristic.h
 	HeuristicStrategy.cpp HeuristicStrategy.h
+	DecisionTreeNode.cpp DecisionTreeNode.h
+	GameStateNode.cpp GameStateNode.h
+	PolyominoNode.cpp PolyominoNode.h
 	GameSequence.cpp GameSequence.h
 )
 

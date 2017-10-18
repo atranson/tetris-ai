@@ -1,8 +1,8 @@
 #ifndef TETRISAI_GAMESTATE_H
 #define TETRISAI_GAMESTATE_H
 
-#include <memory>
 #include <vector>
+#include <deque>
 #include "Polyomino.h"
 #include "MoveResult.h"
 #include "Grid.h"
@@ -21,6 +21,8 @@ namespace TetrisAI {
 		MoveResult moveResult;
 		/// <summary>Grid after the landing of the Polyomino</summary>
 		Grid grid;
+		/// <summary>Queue of known polyominos</summary>
+		std::deque<Polyomino*> polyominoQueue;
 
 	public:
 		GameState(short width, short height);
@@ -32,6 +34,10 @@ namespace TetrisAI {
 		const Polyomino& getPlayedPolyomino() const;
 		const Transformation& getPolyominoMove() const;
 		bool isGameOver() const;
+
+		void addPolyominoToQueue(Polyomino* polyomino);
+		int getPolyominoQueueSize() const;
+		Polyomino* popPolyominoQueue();
 
 		/// <summary>Fit the transformed polyomino in the grid and update all status accordingly</summary>
 		/// <param name="polyomino">Polyomino that must land in the grid</param>
