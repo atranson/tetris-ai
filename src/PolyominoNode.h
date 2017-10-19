@@ -12,11 +12,13 @@ namespace TetrisAI {
 	class PolyominoNode : public DecisionTreeNode {
 
 	public:
-		PolyominoNode(GameState& gameState, Polyomino* p, int depth, std::vector<Polyomino>& possiblePolyominos);
-		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos);
+		PolyominoNode(GameState& gameState, Polyomino* p, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
+		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		virtual void movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination);
 		virtual bool matchPolyomino(Polyomino* polyomino);
 		virtual NodeStatus getNodeStatus();
+		virtual float getNodeEvaluation() const;
+		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition);
 
 	private:
 		Polyomino* polyomino;

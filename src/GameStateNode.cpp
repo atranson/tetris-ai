@@ -4,10 +4,16 @@
 
 namespace TetrisAI {
 
-	void GameStateNode::buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos)
+	GameStateNode::GameStateNode(GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic) : gameState(gameState) 
+	{ 
+		buildChildren(depth, possiblePolyominos, heuristic); 
+		updateNodeEvaluation(heuristic); 
+	}
+
+	void GameStateNode::buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
 	{
 		// If it a game over, we can't build anything from there
-		// If depth is 0, we don't have anything to build
+		// If depth is 0, we don't have anything to build, just to evaluate the current state
 		if (depth == 0 || gameState.isGameOver())
 		{
 			return;
@@ -26,7 +32,7 @@ namespace TetrisAI {
 		{
 			for (auto& p : possiblePolyominos)
 			{
-				children.push_back(std::make_unique<PolyominoNode>(newBaseGameState, &p, depth, possiblePolyominos));
+				children.push_back(std::make_unique<PolyominoNode>(newBaseGameState, &p, depth, possiblePolyominos, heuristic));
 			}
 		}
 		else
@@ -43,13 +49,13 @@ namespace TetrisAI {
 					GameState postMoveState = newBaseGameState;
 					postMoveState.play(*comingPolyomino, t);
 
-					children.push_back(std::make_unique<GameStateNode>(postMoveState, depth - 1, possiblePolyominos));
+					children.push_back(std::make_unique<GameStateNode>(postMoveState, depth - 1, possiblePolyominos, heuristic));
 				}
 			}
 		}
 	}
 
-	void GameStateNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos)
+	void GameStateNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
 	{
 		if (depth == 0)
 		{
@@ -64,7 +70,7 @@ namespace TetrisAI {
 
 		if (children.empty())
 		{
-			buildChildren(depth, possiblePolyominos);
+			buildChildren(depth, possiblePolyominos, heuristic);
 		}
 		else
 		{
@@ -93,7 +99,28 @@ namespace TetrisAI {
 
 			for (auto& child : children)
 			{
-				child->updateTree(newPolyomino, depth - 1, possiblePolyominos);
+				child->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic);
+			}
+		}
+
+		updateNodeEvaluation(heuristic);
+	}
+
+	void GameStateNode::updateNodeEvaluation(Heuristic& heuristic)
+	{
+		if (children.empty())
+		{
+			nodeEvaluation = heuristic.evaluate(gameState);
+		}
+		else
+		{
+			// Actualize the evaluation of the node based on its children
+			nodeEvaluation = 0; // Initialize the evaluation of the node
+			int childNodePosition(0);
+			for (auto& child : children)
+			{
+				nodeEvaluation = child->computeParentEvaluation(nodeEvaluation, childNodePosition);
+				childNodePosition++;
 			}
 		}
 	}
@@ -124,5 +151,16 @@ namespace TetrisAI {
 		}
 
 		return output;
+	}
+
+	float GameStateNode::computeParentEvaluation(float currentEvaluation, unsigned nodePosition)
+	{
+		// If this node is the first of the list, we simply return the evaluation of the node, 
+		// if not we compare it with the current evaluation of the parent and replace it only if we have a better one
+		if (nodePosition > 0 && currentEvaluation > getNodeEvaluation())
+		{
+			return currentEvaluation;
+		}
+		return getNodeEvaluation();
 	}
 }

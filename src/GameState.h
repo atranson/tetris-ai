@@ -31,7 +31,7 @@ namespace TetrisAI {
 		const std::vector<unsigned int>& getGridContent() const;
 		const Grid& getGrid() const;
 		const MoveResult& getMoveResult() const;
-		const Polyomino& getPlayedPolyomino() const;
+		const Polyomino* getPlayedPolyomino() const;
 		const Transformation& getPolyominoMove() const;
 		bool isGameOver() const;
 

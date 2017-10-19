@@ -5,27 +5,27 @@
 #include "GameState.h"
 #include <memory>
 #include <vector>
-#include <iostream>
 
 namespace TetrisAI {
 
 	class GameStateNode : public DecisionTreeNode {
 
 	public:
-		GameStateNode(GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos) : gameState(gameState) { buildChildren(depth, possiblePolyominos); }
-		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos);
+		GameStateNode(GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
+		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		virtual void movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination);
 		virtual bool matchPolyomino(Polyomino* polyomino);
 		virtual NodeStatus getNodeStatus();
-
-		float getLocalEvaluation() const { return localEvaluation; };
+		virtual float getNodeEvaluation() const { return nodeEvaluation; }
+		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition);
 
 	private:
-		float localEvaluation;
+		float nodeEvaluation;
 		GameState gameState;
 		std::vector<std::unique_ptr<DecisionTreeNode>> children;
 
-		void buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos);
+		void buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
+		void updateNodeEvaluation(Heuristic& heuristic);
 	};
 
 }

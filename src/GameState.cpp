@@ -4,7 +4,7 @@
 namespace TetrisAI {
 
 
-	GameState::GameState(short width, short height) : grid(width, height) {}
+	GameState::GameState(short width, short height) : grid(width, height), playedPolyomino(nullptr) {}
 	GameState::GameState(const GameState &original) : 
 		grid(original.grid), 
 		moveResult(original.moveResult),
@@ -28,9 +28,9 @@ namespace TetrisAI {
 		return moveResult;
 	}
 
-	const Polyomino& GameState::getPlayedPolyomino() const
+	const Polyomino* GameState::getPlayedPolyomino() const
 	{
-		return *playedPolyomino;
+		return playedPolyomino;
 	}
 
 	const Transformation& GameState::getPolyominoMove() const
