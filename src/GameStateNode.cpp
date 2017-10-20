@@ -134,6 +134,28 @@ namespace TetrisAI {
 		}
 	}
 
+	std::unique_ptr<DecisionTreeNode> GameStateNode::extractBestChild()
+	{
+		if (children.empty())
+		{
+			return std::unique_ptr<DecisionTreeNode>(nullptr);
+		}
+
+		float best(children[0]->getNodeEvaluation());
+		int bestIndex(0);
+		for (int i=1; i<children.size(); i++)
+		{
+			float childEvaluation(children[i]->getNodeEvaluation());
+			if (childEvaluation > best)
+			{
+				bestIndex = i;
+				best = childEvaluation;
+			}
+		}
+
+		return std::move(children[bestIndex]);
+	}
+
 	bool GameStateNode::matchPolyomino(Polyomino* polyomino)
 	{
 		return false;

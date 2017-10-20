@@ -15,6 +15,7 @@ namespace TetrisAI {
 		PolyominoNode(GameState& gameState, Polyomino* p, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		virtual void movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination);
+		virtual std::unique_ptr<DecisionTreeNode> extractBestChild();
 		virtual bool matchPolyomino(Polyomino* polyomino);
 		virtual NodeStatus getNodeStatus();
 		virtual float getNodeEvaluation() const;

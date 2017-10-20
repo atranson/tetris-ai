@@ -24,6 +24,11 @@ namespace TetrisAI {
 		subRoot->movingChildrenOwnership(destination);
 	}
 
+	std::unique_ptr<DecisionTreeNode> PolyominoNode::extractBestChild()
+	{
+		return subRoot->extractBestChild();
+	}
+
 	bool PolyominoNode::matchPolyomino(Polyomino* p)
 	{
 		return p == polyomino;
