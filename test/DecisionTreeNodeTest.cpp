@@ -107,3 +107,32 @@ BOOST_AUTO_TEST_CASE(decision_tree_node_evaluation_test) {
 	// Thus we get a mean of -2.5 for this branch which is the best one there is from an empty grid and starting with an I
 	BOOST_CHECK_EQUAL(mixedCase.getNodeEvaluation(), -2.5);
 }
+
+BOOST_AUTO_TEST_CASE(decision_tree_node_update_tree_tree) {
+	GameState initialGameState(4, 10); // create game state with the smallest width possible
+	std::vector<Polyomino> triominos(Polyomino::getPolyominosList(3)); // retrieve the two possible triominos
+	MockHeuristic heuristic;
+	initialGameState.addPolyominoToQueue(&(triominos[0]));
+
+	int depth(2);
+	std::unique_ptr<DecisionTreeNode> mixedCase(std::make_unique<GameStateNode>(initialGameState, depth, triominos, heuristic));
+
+	// Replace the root by its best child (trigger deletion of siblings and their subtrees)
+	mixedCase = mixedCase->extractBestChild();
+	DecisionTreeNode::NodeStatus mixedCaseStatus(mixedCase->getNodeStatus());
+	BOOST_CHECK_EQUAL(mixedCaseStatus[0]["GameStateNode"], 1);
+	BOOST_CHECK_EQUAL(mixedCaseStatus[1]["PolyominoNode"], 2); // 2 triominos possibles
+	BOOST_CHECK_EQUAL(mixedCaseStatus[2]["GameStateNode"], 18); // (6+12)*Layer[N-2] > 6 possibilities for I, 12 for L in grid of width 4
+	BOOST_CHECK_EQUAL(mixedCaseStatus.size(), 3);
+	BOOST_CHECK_EQUAL(mixedCase->getNodeEvaluation(), -2.5);
+
+	// Build the next level of three by adding a new polyomino in the queue
+	mixedCase->updateTree(&(triominos[1]), depth, triominos, heuristic);
+	mixedCaseStatus = mixedCase->getNodeStatus();
+	BOOST_CHECK_EQUAL(mixedCaseStatus[0]["GameStateNode"], 1);
+	BOOST_CHECK_EQUAL(mixedCaseStatus[1]["GameStateNode"], 12); // 12 possibilities for the L in this grid
+	BOOST_CHECK_EQUAL(mixedCaseStatus[2]["PolyominoNode"], 24); // 2 triominos possibles
+	BOOST_CHECK_EQUAL(mixedCaseStatus[3]["GameStateNode"], 216); // (6+12)*Layer[N-2] > 6 possibilities for I, 12 for L in grid of width 4
+	BOOST_CHECK_EQUAL(mixedCaseStatus.size(), 4);
+	BOOST_CHECK(mixedCase->getNodeEvaluation() != -2.5); // Should have been updated
+}

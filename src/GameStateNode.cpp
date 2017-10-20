@@ -76,7 +76,6 @@ namespace TetrisAI {
 		{
 			if (queueSizeBeforeUpdate == 0 && newPolyomino != nullptr)
 			{
-				bool found = false;
 				std::unique_ptr<DecisionTreeNode> matchingChild(nullptr);
 				while(!children.empty() && matchingChild == nullptr)
 				{
