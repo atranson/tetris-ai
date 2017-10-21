@@ -38,14 +38,13 @@ namespace TetrisAI {
 		return polyominoMove;
 	}
 
-	bool GameState::play(const Polyomino& polyomino, Transformation transformation)
+	bool GameState::play(Transformation transformation)
 	{
 		// Reset state values
-		playedPolyomino = &polyomino;
+		playedPolyomino = polyominoQueueHead();
+		polyominoQueue.pop_front(); // Delete it from the queue as we will use it here
 		polyominoMove = transformation;
-		PolyominoState polyominoState(polyomino.getRotatedPiece(transformation.rotation));
-
-		moveResult = grid.fitPiece(polyomino, transformation);
+		moveResult = grid.fitPiece(*playedPolyomino, transformation);
 
 		// Return true if the piece could fit
 		return !moveResult.gameOver;
@@ -66,13 +65,20 @@ namespace TetrisAI {
 		return polyominoQueue.size();
 	}
 
-	Polyomino* GameState::popPolyominoQueue()
+	Polyomino* GameState::polyominoQueueHead() const
 	{
 		if (!polyominoQueue.empty())
 		{
-			Polyomino* head(polyominoQueue.front());
-			polyominoQueue.pop_front();
-			return head;
+			return polyominoQueue.front();
+		}
+		return nullptr;
+	}
+
+	Polyomino* GameState::polyominoQueueTail() const
+	{
+		if (!polyominoQueue.empty())
+		{
+			return polyominoQueue.back();
 		}
 		return nullptr;
 	}

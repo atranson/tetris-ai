@@ -19,6 +19,8 @@ namespace TetrisAI {
 		virtual bool matchPolyomino(Polyomino* polyomino);
 		virtual NodeStatus getNodeStatus();
 		virtual float getNodeEvaluation() const;
+		virtual Transformation getPolyominoMove() const;
+		virtual bool isGameOver() const;
 		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition);
 
 	private:

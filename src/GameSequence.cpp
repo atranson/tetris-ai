@@ -21,10 +21,10 @@ namespace TetrisAI {
 		return status;
 	}
 
-	void GameSequence::playMove(const Polyomino& polyomino, Transformation transformation)
+	void GameSequence::playMove(Transformation transformation)
 	{
 		std::lock_guard<std::mutex> guard(mutex);
-		gameState.play(polyomino, transformation);
+		gameState.play(transformation);
 	}
 
 	int GameSequence::getGridWidth() const
@@ -56,17 +56,21 @@ namespace TetrisAI {
 		std::vector<Polyomino> polyominos(Polyomino::getPolyominosList(polyominoSquares));
 		stats.polyominosBreakdown = std::vector<unsigned int>(polyominos.size());
 
+		// We know two pieces in advance, thus we add one here
+		int currentPolyominoIndex = rand() % polyominos.size();
+		//gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
+
 		while (status == GameSequence::Status::Playing)
 		{
-			int currentPolyominoIndex = rand() % polyominos.size();
-			Polyomino& currentPolyomino(polyominos[currentPolyominoIndex]);
-			Transformation chosenMove(strategy->decideMove(gameState, currentPolyomino));
+			currentPolyominoIndex = rand() % polyominos.size();
+			gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
+			Transformation chosenMove(strategy->decideMove(gameState, polyominos));
 
 			// If a valid move was found
 			if (chosenMove.translation != -1)
 			{
-				//std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPolyominoIndex << std::endl;
-				playMove(currentPolyomino, chosenMove);
+				std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPolyominoIndex << std::endl;
+				playMove(chosenMove);
 				
 				// Updating statistics
 				updateStatistics(currentPolyominoIndex, gameState.getMoveResult());

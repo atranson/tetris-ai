@@ -63,7 +63,7 @@ namespace TetrisAI {
 		bool waitBetweenMoves;
 		std::atomic<Status> status;
 
-		void playMove(const Polyomino& polyomino, Transformation transformation);
+		void playMove(Transformation transformation);
 		void updateStatistics(int playedPolyominoIndex, const MoveResult& result);
 	};
 

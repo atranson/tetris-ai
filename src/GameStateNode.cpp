@@ -4,17 +4,17 @@
 
 namespace TetrisAI {
 
-	GameStateNode::GameStateNode(GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic) : gameState(gameState) 
+	GameStateNode::GameStateNode(const GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic) : gameState(gameState) 
 	{ 
 		buildChildren(depth, possiblePolyominos, heuristic); 
-		updateNodeEvaluation(heuristic); 
+		updateNodeEvaluation(heuristic);
 	}
 
 	void GameStateNode::buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
 	{
 		// If it a game over, we can't build anything from there
 		// If depth is 0, we don't have anything to build, just to evaluate the current state
-		if (depth == 0 || gameState.isGameOver())
+		if (depth <= 0 || gameState.isGameOver())
 		{
 			return;
 		}
@@ -26,10 +26,11 @@ namespace TetrisAI {
 		}
 
 		GameState newBaseGameState = gameState; // Copy game state
-		Polyomino* comingPolyomino(newBaseGameState.popPolyominoQueue()); // Modify the queue and retrieve upcoming polyomino
+		Polyomino* comingPolyomino(newBaseGameState.polyominoQueueHead()); // Retrieve next polyomino
 		// If the queue was empty
 		if (comingPolyomino == nullptr)
 		{
+			children.reserve(possiblePolyominos.size());
 			for (auto& p : possiblePolyominos)
 			{
 				children.push_back(std::make_unique<PolyominoNode>(newBaseGameState, &p, depth, possiblePolyominos, heuristic));
@@ -38,16 +39,16 @@ namespace TetrisAI {
 		else
 		{
 			Transformation t;
-
+			int gridWidth(newBaseGameState.getGrid().getWidth());
 			// Test each possible move for the given polyomino and keep the one that has the best evaluation
 			for (t.rotation = 0; t.rotation < comingPolyomino->getRotationCount(); t.rotation++)
 			{
-				PolyominoState rotatedPolyomino = comingPolyomino->getRotatedPiece(t.rotation);
-				for (t.translation = 0; t.translation <= newBaseGameState.getGrid().getWidth() - rotatedPolyomino.getWidth(); t.translation++)
+				int rotatedPolyominoWidth(comingPolyomino->getRotatedPiece(t.rotation).getWidth());
+				for (t.translation = 0; t.translation <= gridWidth - rotatedPolyominoWidth; t.translation++)
 				{
 					// Create a new game state where that move was played
 					GameState postMoveState = newBaseGameState;
-					postMoveState.play(*comingPolyomino, t);
+					postMoveState.play(t);
 
 					children.push_back(std::make_unique<GameStateNode>(postMoveState, depth - 1, possiblePolyominos, heuristic));
 				}
@@ -57,7 +58,7 @@ namespace TetrisAI {
 
 	void GameStateNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
 	{
-		if (depth == 0)
+		if (depth <= 0)
 		{
 			return;
 		}
@@ -158,6 +159,21 @@ namespace TetrisAI {
 	bool GameStateNode::matchPolyomino(Polyomino* polyomino)
 	{
 		return false;
+	}
+
+	float GameStateNode::getNodeEvaluation() const 
+	{ 
+		return nodeEvaluation; 
+	}
+
+	Transformation GameStateNode::getPolyominoMove() const 
+	{ 
+		return gameState.getPolyominoMove(); 
+	}
+
+	bool GameStateNode::isGameOver() const
+	{
+		return gameState.isGameOver();
 	}
 
 	DecisionTreeNode::NodeStatus GameStateNode::getNodeStatus()

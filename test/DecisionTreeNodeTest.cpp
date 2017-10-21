@@ -36,13 +36,18 @@ BOOST_AUTO_TEST_CASE(decision_tree_node_constructors_test) {
 	// STEPS AHEAD = NUMBER OF KNOWN INCOMING POLYOMINOS
 	initialGameState.addPolyominoToQueue(&(triominos[0]));
 	initialGameState.addPolyominoToQueue(&(triominos[1]));
-	GameStateNode complexCase(initialGameState, 1, triominos, heuristic);
-	DecisionTreeNode::NodeStatus complexCaseStatus(complexCase.getNodeStatus());
+	std::unique_ptr<DecisionTreeNode> complexCase(std::make_unique<GameStateNode>(initialGameState, 1, triominos, heuristic));
+	DecisionTreeNode::NodeStatus complexCaseStatus(complexCase->getNodeStatus());
 	BOOST_CHECK_EQUAL(complexCaseStatus[0]["GameStateNode"], 1);
 	BOOST_CHECK_EQUAL(complexCaseStatus[1]["GameStateNode"], 10); // 10 possibilities for the I triomino
 	BOOST_CHECK_EQUAL(complexCaseStatus.size(), 2);
 	// Best case for MockHeuristic is when the I is put on the right of the grid thus accounting for -1 3 times
-	BOOST_CHECK_EQUAL(complexCase.getNodeEvaluation(), -3); 
+	BOOST_CHECK_EQUAL(complexCase->getNodeEvaluation(), -3); 
+	// If we extract the best child that produced that evaluation, we should get the corresponding transformation
+	complexCase = complexCase->extractBestChild();
+	BOOST_CHECK_EQUAL(complexCase->getPolyominoMove().translation, 0);
+	BOOST_CHECK_EQUAL(complexCase->getPolyominoMove().rotation, 1);
+	BOOST_CHECK_EQUAL(complexCase->getNodeEvaluation(), -3);
 	
 	GameStateNode complexCase2(initialGameState, 2, triominos, heuristic);
 	DecisionTreeNode::NodeStatus complexCaseStatus2(complexCase2.getNodeStatus());

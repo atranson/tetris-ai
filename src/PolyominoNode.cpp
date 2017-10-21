@@ -2,11 +2,11 @@
 
 namespace TetrisAI {
 
-	PolyominoNode::PolyominoNode(GameState& gameState, Polyomino* p, int depth, std::vector<Polyomino>& possiblePolyominosh, Heuristic& heuristic) : polyomino(p)
+	PolyominoNode::PolyominoNode(GameState& gameState, Polyomino* p, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic) : polyomino(p)
 	{
 		GameState subGameState = gameState; // copy
 		subGameState.addPolyominoToQueue(p);
-		subRoot = std::make_unique<GameStateNode>(subGameState, depth, possiblePolyominosh, heuristic);
+		subRoot = std::make_unique<GameStateNode>(subGameState, depth, possiblePolyominos, heuristic);
 	}
 
 	void PolyominoNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
@@ -48,6 +48,16 @@ namespace TetrisAI {
 	float PolyominoNode::getNodeEvaluation() const 
 	{ 
 		return subRoot->getNodeEvaluation(); 
+	}
+
+	Transformation PolyominoNode::getPolyominoMove() const
+	{
+		return subRoot->getPolyominoMove();
+	}
+
+	bool PolyominoNode::isGameOver() const
+	{
+		return subRoot->isGameOver();
 	}
 
 	// Compute a mean in an iterative way

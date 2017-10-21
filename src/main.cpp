@@ -58,7 +58,7 @@ int main()
 
 	int polyominoSquares(4);
 	DellacherieHeuristic chosenHeuristic;
-	HeuristicStrategy strategy(chosenHeuristic);
+	HeuristicStrategy strategy(chosenHeuristic, 2);
 	GameSequence gameSequence(width, height, polyominoSquares, &strategy);
 
 	std::vector<std::thread> threads;

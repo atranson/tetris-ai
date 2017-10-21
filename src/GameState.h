@@ -37,13 +37,13 @@ namespace TetrisAI {
 
 		void addPolyominoToQueue(Polyomino* polyomino);
 		int getPolyominoQueueSize() const;
-		Polyomino* popPolyominoQueue();
+		Polyomino* polyominoQueueHead() const;
+		Polyomino* polyominoQueueTail() const;
 
 		/// <summary>Fit the transformed polyomino in the grid and update all status accordingly</summary>
-		/// <param name="polyomino">Polyomino that must land in the grid</param>
 		/// <param name="transformation">Transformation to be applied before playing the Polyomino</param>
 		/// <returns>True if the move could be played, False if it resulted in a game over</returns>
-		bool play(const Polyomino& polyomino, Transformation transformation);
+		bool play(Transformation transformation);
 	};
 
 }

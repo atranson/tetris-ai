@@ -22,8 +22,10 @@ namespace TetrisAI {
 		virtual bool matchPolyomino(Polyomino* polyomino) = 0;
 		virtual void movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination) = 0;
 		virtual std::unique_ptr<DecisionTreeNode> extractBestChild() = 0;
+		virtual bool isGameOver() const = 0;
 		virtual NodeStatus getNodeStatus() = 0;
 		virtual float getNodeEvaluation() const = 0;
+		virtual Transformation getPolyominoMove() const = 0;
 		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition) = 0;
 
 	protected:

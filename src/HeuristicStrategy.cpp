@@ -1,33 +1,50 @@
 #include "HeuristicStrategy.h"
+#include "GameStateNode.h"
+#include <stdexcept>
 
 namespace TetrisAI {
 
-	Transformation HeuristicStrategy::decideMove(const GameState& gs, const Polyomino& nextPolyomino)
+	Transformation HeuristicStrategy::decideMove(const GameState& gs, std::vector<Polyomino>& possiblePolyominos)
 	{
-		float currentBest(heuristic.gameOverEvaluation);
-		Transformation t, bestMove(-1, -1);
-
-		// Test each possible move for the given polyomino and keep the one that has the best evaluation
-		for (t.rotation = 0; t.rotation < nextPolyomino.getRotationCount(); t.rotation++)
+		// If the tree has not been initialized
+		if (!decisionTreeRoot)
 		{
-			PolyominoState rotatedPolyomino = nextPolyomino.getRotatedPiece(t.rotation);
-			for (t.translation = 0; t.translation <= gs.getGrid().getWidth() - rotatedPolyomino.getWidth(); t.translation++)
+			initializeTree(gs, possiblePolyominos);
+			
+		}
+		else
+		{
+			Polyomino* lastAddedPolyomino(gs.polyominoQueueTail());
+			if (lastAddedPolyomino != nullptr)
 			{
-				// Create a new game state where that move was played
-				GameState postMoveState = gs;
-				postMoveState.play(nextPolyomino, t);
-
-				// Evaluate the new game state and compare its evaluation to the best one so far
-				float evaluation(heuristic.evaluate(postMoveState, currentBest));
-				if (currentBest < evaluation)
-				{
-					currentBest = evaluation;
-					bestMove = t;
-				}
+				// Update tree content and nodes evaluation by building new level if necessary
+				decisionTreeRoot->updateTree(lastAddedPolyomino, depth, possiblePolyominos, heuristic);	
+			}
+			else
+			{
+				throw std::invalid_argument("Given game state does not have any pending polyomino");
 			}
 		}
 
-		return bestMove;
+		DecisionTreeNode::NodeStatus status(decisionTreeRoot->getNodeStatus());
+		;
+
+		// Replace the root by its best child (trigger deletion of siblings and their subtrees)
+		decisionTreeRoot = decisionTreeRoot->extractBestChild();
+
+		status  = decisionTreeRoot->getNodeStatus();
+		;
+
+		if (decisionTreeRoot->isGameOver())
+		{
+			return Transformation(-1, -1);
+		}
+		return decisionTreeRoot->getPolyominoMove();
+	}
+
+	void HeuristicStrategy::initializeTree(const GameState& gs, std::vector<Polyomino>& possiblePolyominos)
+	{
+		decisionTreeRoot = std::make_unique<GameStateNode>(gs, depth, possiblePolyominos, heuristic);
 	}
 
 }
