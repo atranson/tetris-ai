@@ -57,8 +57,14 @@ namespace TetrisAI {
 		stats.polyominosBreakdown = std::vector<unsigned int>(polyominos.size());
 
 		// We know two pieces in advance, thus we add one here
-		int currentPolyominoIndex = rand() % polyominos.size();
-		gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
+		int currentPolyominoIndex(0);
+		
+		// Draw in advance a certain amount of polyominos
+		for (int i = 0; i < stepsAhead; i++)
+		{
+			currentPolyominoIndex = rand() % polyominos.size();
+			gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
+		}
 
 		while (status == GameSequence::Status::Playing)
 		{
@@ -83,11 +89,6 @@ namespace TetrisAI {
 			{
 				//std::cout << "Game over: could not place Piece #" << currentPolyominoIndex << std::endl;
 				status = GameSequence::Status::GameOver;
-			}
-
-			if(waitBetweenMoves)
-			{ 
-				system("pause");
 			}
 		}
 	}

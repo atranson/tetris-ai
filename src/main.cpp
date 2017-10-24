@@ -55,11 +55,12 @@ int main()
 {
 	int height(20), width(10);
 	bool enableView(true);
-
+	unsigned stepsAhead(0), heuristicDepth(1);
 	int polyominoSquares(4);
+
 	DellacherieHeuristic chosenHeuristic;
-	HeuristicStrategy strategy(chosenHeuristic, 2);
-	GameSequence gameSequence(width, height, polyominoSquares, &strategy);
+	std::shared_ptr<AIStrategy> strategy(std::make_shared<HeuristicStrategy>(chosenHeuristic, heuristicDepth));
+	GameSequence gameSequence(width, height, polyominoSquares, strategy, stepsAhead);
 
 	std::vector<std::thread> threads;
 	threads.push_back(std::thread(&GameSequence::playGame, &gameSequence));

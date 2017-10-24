@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <atomic>
+#include <memory>
 #include "AIStrategy.h"
 #include "GameState.h"
 
@@ -33,10 +34,10 @@ namespace TetrisAI {
 			GameOver
 		};
 
-		GameSequence(short gridWidth, short gridHeight, unsigned int polyominoSquares, AIStrategy* strategy, bool waitBetweenMoves=false) :
+		GameSequence(short gridWidth, short gridHeight, unsigned int polyominoSquares, std::shared_ptr<AIStrategy> strategy, unsigned int stepsAhead) :
 			gridWidth(gridWidth), gridHeight(gridHeight), polyominoSquares(polyominoSquares), 
 			strategy(strategy), stats(polyominoSquares), status(Status::New),
-			gameState(gridWidth, gridHeight), waitBetweenMoves(waitBetweenMoves)
+			gameState(gridWidth, gridHeight), stepsAhead(stepsAhead)
 			{}
 
 		// Those getters return values since we may have concurrency problem
@@ -55,12 +56,12 @@ namespace TetrisAI {
 
 		/// <summary>Number of squares that should compose the polyominos used for the game</summary>
 		unsigned int polyominoSquares;
+		unsigned int stepsAhead;
 		short gridWidth;
 		short gridHeight;
-		AIStrategy* strategy;
+		std::shared_ptr<AIStrategy> strategy;
 		GameStatistics stats;
 		GameState gameState;
-		bool waitBetweenMoves;
 		std::atomic<Status> status;
 
 		void playMove(Transformation transformation);
