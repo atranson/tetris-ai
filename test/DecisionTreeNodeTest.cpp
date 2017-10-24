@@ -8,8 +8,8 @@
 using namespace TetrisAI;
 
 class MockHeuristic : public Heuristic {
-	private:
-		virtual float evaluate(const GameState& gs, float stopValue, bool useStopValue)
+	public:
+		virtual float evaluate(const GameState& gs)
 		{
 			float output(0);
 			const std::vector<unsigned> grid(gs.getGrid().getContent());
@@ -18,6 +18,11 @@ class MockHeuristic : public Heuristic {
 				output -= row;
 			}
 			return output;
+		}
+
+		virtual float evaluateBranch(const GameState& gs, float childrenEvaluation)
+		{
+			return childrenEvaluation;
 		}
 };
 

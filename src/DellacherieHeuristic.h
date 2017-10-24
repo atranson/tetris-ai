@@ -6,8 +6,9 @@
 namespace TetrisAI {
 
 	class DellacherieHeuristic : public Heuristic {
-	private:
-		virtual float evaluate(const GameState& gs, float stopValue, bool useStopValue);
+	public:
+		virtual float evaluate(const GameState& gs);
+		virtual float evaluateBranch(const GameState& gs, float childrenEvaluation);
 	};
 
 }

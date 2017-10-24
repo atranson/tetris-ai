@@ -26,7 +26,7 @@ namespace TetrisAI {
 		virtual NodeStatus getNodeStatus() = 0;
 		virtual float getNodeEvaluation() const = 0;
 		virtual Transformation getPolyominoMove() const = 0;
-		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition) = 0;
+		virtual float computeSiblingsEvaluation(float currentEvaluation, unsigned nodePosition) = 0;
 
 	protected:
 		NodeStatus mergeNodesStatus(std::vector<std::unique_ptr<DecisionTreeNode>>& nodes);

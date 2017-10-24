@@ -101,6 +101,7 @@ namespace TetrisAI {
 			{
 				child->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic);
 			}
+			;
 		}
 
 		updateNodeEvaluation(heuristic);
@@ -115,13 +116,14 @@ namespace TetrisAI {
 		else
 		{
 			// Actualize the evaluation of the node based on its children
-			nodeEvaluation = 0; // Initialize the evaluation of the node
+			float childrenEvaluation(0); // Initialize the evaluation of the node
 			int childNodePosition(0);
 			for (auto& child : children)
 			{
-				nodeEvaluation = child->computeParentEvaluation(nodeEvaluation, childNodePosition);
+				childrenEvaluation = child->computeSiblingsEvaluation(childrenEvaluation, childNodePosition);
 				childNodePosition++;
 			}
+			nodeEvaluation = heuristic.evaluateBranch(gameState, childrenEvaluation);
 		}
 	}
 
@@ -190,7 +192,7 @@ namespace TetrisAI {
 		return output;
 	}
 
-	float GameStateNode::computeParentEvaluation(float currentEvaluation, unsigned nodePosition)
+	float GameStateNode::computeSiblingsEvaluation(float currentEvaluation, unsigned nodePosition)
 	{
 		// If this node is the first of the list, we simply return the evaluation of the node, 
 		// if not we compare it with the current evaluation of the parent and replace it only if we have a better one

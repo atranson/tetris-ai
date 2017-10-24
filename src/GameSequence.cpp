@@ -58,7 +58,7 @@ namespace TetrisAI {
 
 		// We know two pieces in advance, thus we add one here
 		int currentPolyominoIndex = rand() % polyominos.size();
-		//gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
+		gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));
 
 		while (status == GameSequence::Status::Playing)
 		{
@@ -69,12 +69,12 @@ namespace TetrisAI {
 			// If a valid move was found
 			if (chosenMove.translation != -1)
 			{
-				std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPolyominoIndex << std::endl;
+				//std::cout << "Chose (" << chosenMove.translation << ", " << chosenMove.rotation << ") for Piece #" << currentPolyominoIndex << std::endl;
 				playMove(chosenMove);
 				
 				// Updating statistics
 				updateStatistics(currentPolyominoIndex, gameState.getMoveResult());
-				if (stats.polyominosPlayed % 10000 == 0) 
+				if (stats.polyominosPlayed % 100000 == 0) 
 				{
 					std::cout << "Played " << stats.polyominosPlayed << " - Cleared " << stats.linesCleared << std::endl;
 				}

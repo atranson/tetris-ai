@@ -62,7 +62,7 @@ namespace TetrisAI {
 
 	// Compute a mean in an iterative way
 	// X(t) = (t-1)/t * X(t-1) + x(t)/t  = [(t-1) * X(t-1) + x(t)]/t
-	float PolyominoNode::computeParentEvaluation(float currentEvaluation, unsigned nodePosition)
+	float PolyominoNode::computeSiblingsEvaluation(float currentEvaluation, unsigned nodePosition)
 	{
 		// Implicit conversion of nodePosition to float ensures correct computation
 		return (nodePosition * currentEvaluation + getNodeEvaluation()) / (nodePosition + 1);

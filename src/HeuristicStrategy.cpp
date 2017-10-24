@@ -10,7 +10,6 @@ namespace TetrisAI {
 		if (!decisionTreeRoot)
 		{
 			initializeTree(gs, possiblePolyominos);
-			
 		}
 		else
 		{
@@ -28,7 +27,6 @@ namespace TetrisAI {
 
 		DecisionTreeNode::NodeStatus status(decisionTreeRoot->getNodeStatus());
 		;
-
 		// Replace the root by its best child (trigger deletion of siblings and their subtrees)
 		decisionTreeRoot = decisionTreeRoot->extractBestChild();
 

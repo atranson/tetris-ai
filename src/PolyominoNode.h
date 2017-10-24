@@ -21,7 +21,7 @@ namespace TetrisAI {
 		virtual float getNodeEvaluation() const;
 		virtual Transformation getPolyominoMove() const;
 		virtual bool isGameOver() const;
-		virtual float computeParentEvaluation(float currentEvaluation, unsigned nodePosition);
+		virtual float computeSiblingsEvaluation(float currentEvaluation, unsigned nodePosition);
 
 	private:
 		Polyomino* polyomino;

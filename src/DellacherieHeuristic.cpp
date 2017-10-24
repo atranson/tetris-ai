@@ -2,7 +2,7 @@
 
 namespace TetrisAI {
 	
-	float DellacherieHeuristic::evaluate(const GameState& gs, float stopValue, bool useStopValue)
+	float DellacherieHeuristic::evaluate(const GameState& gs)
 	{
 		if (gs.isGameOver() || gs.getPlayedPolyomino() == nullptr)
 		{
@@ -19,12 +19,18 @@ namespace TetrisAI {
 		output += (topMarginMin + topMarginMin) / 2;
 		output += 2 * moveResult.linesCleared * moveResult.pieceVanishedBlocks;
 		
-		if (!useStopValue || stopValue < output) { output -= 2 * (grid.getHeight() + 1 - grid.getTopHeight()); }
-		if (!useStopValue || stopValue < output) { output -= grid.columnTransitions(); }
-		if (!useStopValue || stopValue < output) { output -= grid.rowTransitions(); }
-		if (!useStopValue || stopValue < output) { output -= 4 * grid.cellars(); }
-		if (!useStopValue || stopValue < output) { output -= grid.wells(); }
+		output -= 2 * (grid.getHeight() + 1 - grid.getTopHeight());
+		output -= grid.columnTransitions();
+		output -= grid.rowTransitions();
+		output -= 4 * grid.cellars();
+		output -= grid.wells();
 		
 		return output;
+	}
+
+	float DellacherieHeuristic::evaluateBranch(const GameState& gs, float childrenEvaluation)
+	{
+		MoveResult moveResult(gs.getMoveResult());
+		return childrenEvaluation + 2 * moveResult.linesCleared * moveResult.pieceVanishedBlocks;
 	}
 }
