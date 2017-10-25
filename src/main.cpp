@@ -1,3 +1,4 @@
+#include <boost/program_options.hpp>
 #include <iostream>
 #include "GameSequence.h"
 #include "GridView.h"
@@ -51,13 +52,80 @@ void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-	int height(20), width(10);
-	bool enableView(true);
+	int height(20), width(10), polyominoSquares(4);
 	unsigned stepsAhead(0), heuristicDepth(1);
-	int polyominoSquares(4);
+	bool enableView(true);
 
+	// PARSING PROGRAM OPTIONS
+	namespace po = boost::program_options;
+	// Declare the supported options.
+	po::options_description desc("Allowed options");
+	desc.add_options()
+		("help", "produce help message")
+		("height,h", po::value<int>()->default_value(height), "set height of the grid [4-32]")
+		("width,w", po::value<int>()->default_value(width), "set width of the grid [4-32]")
+		("polyomino,p", po::value<int>()->default_value(polyominoSquares), "set the number of squares composing polyominos [1-5]")
+		("stepsAhead,s", po::value<unsigned int>()->default_value(stepsAhead), "set the number of polyominos known in advance (excepting the one currently being played) [0-5]")
+		("heuristicDepth,d", po::value<unsigned int>()->default_value(heuristicDepth), "set the number of moves the decision tree should consider in advance [1-4]")
+		;
+
+	po::variables_map vm;
+	try
+	{
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+		po::notify(vm);
+
+		if (vm.count("help")) {
+			std::cout << desc << "\n";
+			return 1;
+		}
+
+		if (vm.count("height")) { height = vm["height"].as<int>(); }
+		if (vm.count("width")) { width = vm["width"].as<int>(); }
+		if (vm.count("polyomino")) { polyominoSquares = vm["polyomino"].as<int>(); }
+		if (vm.count("stepsAhead")) { stepsAhead = vm["stepsAhead"].as<unsigned int>(); }
+		if (vm.count("heuristicDepth")) { heuristicDepth = vm["heuristicDepth"].as<unsigned int>(); }
+
+		// Checking values ranges
+		if (height < 4 || height > 32 || width < 4 || width > 32)
+		{
+			std::cout << "Grid size out of range [4-32]" << std::endl;
+			return 1;
+		}
+		if (polyominoSquares < 1 || polyominoSquares > 5)
+		{
+			std::cout << "Polyomino size out of range [1-5]" << std::endl;
+			return 1;
+		}
+		if (stepsAhead < 0 || stepsAhead > 5)
+		{
+			std::cout << "Steps ahead parameter out of range [0-5]" << std::endl;
+			return 1;
+		}
+		if (heuristicDepth < 1 || heuristicDepth > 4)
+		{
+			std::cout << "Heuristic depth parameter out of range [1-4]" << std::endl;
+			return 1;
+		}
+
+		// Reporting launch setup
+		std::cout << "Launching game sequence with the following parameters:" << std::endl
+			<< "\tGrid(w x h) " << width << "x" << height << std::endl
+			<< "\tPolyomino will be composed of " << polyominoSquares << " squares" << std::endl
+			<< "\t" << stepsAhead << " polyomino(s) will be known in advance during play" << std::endl
+			<< "\tThe AI will consider " << heuristicDepth << " move(s) in advance (including the current polyomino)" << std::endl;
+
+	}
+	catch (po::error& e)
+	{
+		std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+		std::cerr << desc << std::endl;
+		return 1;
+	}
+
+	// MAIN PROGRAM
 	DellacherieHeuristic chosenHeuristic;
 	std::shared_ptr<AIStrategy> strategy(std::make_shared<HeuristicStrategy>(chosenHeuristic, heuristicDepth));
 	GameSequence gameSequence(width, height, polyominoSquares, strategy, stepsAhead);
