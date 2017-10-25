@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 {
 	int height(20), width(10), polyominoSquares(4);
 	unsigned stepsAhead(0), heuristicDepth(1);
-	bool enableView(true);
+	bool noWindow(false);
 
 	// PARSING PROGRAM OPTIONS
 	namespace po = boost::program_options;
@@ -69,6 +69,7 @@ int main(int argc, char* argv[])
 		("polyomino,p", po::value<int>()->default_value(polyominoSquares), "set the number of squares composing polyominos [1-5]")
 		("stepsAhead,s", po::value<unsigned int>()->default_value(stepsAhead), "set the number of polyominos known in advance (excepting the one currently being played) [0-5]")
 		("heuristicDepth,d", po::value<unsigned int>()->default_value(heuristicDepth), "set the number of moves the decision tree should consider in advance [1-4]")
+		("noWindow", po::bool_switch(&noWindow), "disable the window that displays the grid")
 		;
 
 	po::variables_map vm;
@@ -132,7 +133,7 @@ int main(int argc, char* argv[])
 
 	std::vector<std::thread> threads;
 	threads.push_back(std::thread(&GameSequence::playGame, &gameSequence));
-	if (enableView)
+	if (!noWindow)
 	{
 		threads.push_back(std::thread(gameView, std::ref(gameSequence), 33));
 	}
