@@ -24,7 +24,13 @@ namespace TetrisAI {
 	void GameSequence::playMove(Transformation transformation)
 	{
 		std::lock_guard<std::mutex> guard(mutex);
-		gameState.play(transformation);
+		try {
+			gameState.play(transformation);
+		}
+		catch (std::invalid_argument)
+		{
+			;
+		}
 	}
 
 	int GameSequence::getGridWidth() const

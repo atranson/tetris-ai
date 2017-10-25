@@ -17,7 +17,7 @@ namespace TetrisAI {
 			if (lastAddedPolyomino != nullptr)
 			{
 				// Update tree content and nodes evaluation by building new level if necessary
-				decisionTreeRoot->updateTree(lastAddedPolyomino, depth, possiblePolyominos, heuristic);	
+				decisionTreeRoot->updateTree(lastAddedPolyomino, depth, possiblePolyominos, heuristic, useMultithreading);	
 			}
 			else
 			{

@@ -9,14 +9,14 @@ namespace TetrisAI {
 		subRoot = std::make_unique<GameStateNode>(subGameState, depth, possiblePolyominos, heuristic);
 	}
 
-	void PolyominoNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
+	void PolyominoNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic, bool useMultithreading)
 	{
 		if (newPolyomino != nullptr)
 		{
 			throw std::invalid_argument("Error: PolyominoNode::updateTree should not receive newPolyominos since they represent cases where the polyomino is unknown.");
 		}
 
-		subRoot->updateTree(newPolyomino, depth, possiblePolyominos, heuristic);
+		subRoot->updateTree(newPolyomino, depth, possiblePolyominos, heuristic, useMultithreading);
 	}
 
 	void PolyominoNode::movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination)

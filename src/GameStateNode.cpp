@@ -1,6 +1,8 @@
 #include "GameStateNode.h"
 #include "PolyominoNode.h"
 #include <stdexcept>
+#include <thread>
+#include <iostream>
 
 namespace TetrisAI {
 
@@ -56,7 +58,7 @@ namespace TetrisAI {
 		}
 	}
 
-	void GameStateNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
+	void GameStateNode::updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic, bool useMultithreading)
 	{
 		if (depth <= 0)
 		{
@@ -97,14 +99,53 @@ namespace TetrisAI {
 				newPolyomino = nullptr; // Polyomino has been "used" at this level of depth
 			}
 
-			for (auto& child : children)
+			if (useMultithreading)
 			{
-				child->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic);
-			}
-			;
-		}
+				unsigned nbSubThreads(std::thread::hardware_concurrency());
+				unsigned q(children.size() / nbSubThreads), r(children.size() % nbSubThreads);
+				if (children.size() < nbSubThreads)
+				{
+					nbSubThreads = children.size();
+				}
 
+				//std::cout << "Spawning thread children (" << nbSubThreads << " for " << children.size() << " children)" << std::endl;
+				std::vector<std::thread> subThreads;
+				subThreads.reserve(nbSubThreads);
+				unsigned extras(r);
+				for (unsigned i = 0; i < nbSubThreads; i++)
+				{
+					subThreads.push_back(std::thread(&GameStateNode::updateSubTree, this,
+						i*q + r-extras,
+						(i+1)*q - 1 + r-extras + (extras != 0 ? 1 : 0),
+						newPolyomino, depth - 1, std::ref(possiblePolyominos), std::ref(heuristic)
+					));
+					if (extras > 0) {
+						extras--;
+					}
+				}
+
+				for (auto& t : subThreads)
+				{
+					t.join();
+				}
+			}
+			else
+			{
+				for (auto& child : children)
+				{
+					child->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic, false);
+				}
+			}
+		}
 		updateNodeEvaluation(heuristic);
+	}
+
+	void GameStateNode::updateSubTree(unsigned from, unsigned to, Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic)
+	{
+		for (unsigned i = from; i <= to; i++)
+		{
+			children[i]->updateTree(newPolyomino, depth, possiblePolyominos, heuristic, false);
+		}
 	}
 
 	void GameStateNode::updateNodeEvaluation(Heuristic& heuristic)

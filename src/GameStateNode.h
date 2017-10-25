@@ -12,7 +12,7 @@ namespace TetrisAI {
 
 	public:
 		GameStateNode(const GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
-		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
+		virtual void updateTree(Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic, bool useMultithreading);
 		virtual void movingChildrenOwnership(std::vector<std::unique_ptr<DecisionTreeNode>>& destination);
 		virtual std::unique_ptr<DecisionTreeNode> extractBestChild();
 		virtual bool matchPolyomino(Polyomino* polyomino);
@@ -29,6 +29,7 @@ namespace TetrisAI {
 
 		void buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		void updateNodeEvaluation(Heuristic& heuristic);
+		void updateSubTree(unsigned from, unsigned to, Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 	};
 
 }

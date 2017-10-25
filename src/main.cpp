@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 {
 	int height(20), width(10), polyominoSquares(4);
 	unsigned stepsAhead(0), heuristicDepth(1);
-	bool noWindow(false);
+	bool noWindow(false), useMultithreading(false);
 
 	// PARSING PROGRAM OPTIONS
 	namespace po = boost::program_options;
@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
 		("stepsAhead,s", po::value<unsigned int>()->default_value(stepsAhead), "set the number of polyominos known in advance (excepting the one currently being played) [0-5]")
 		("heuristicDepth,d", po::value<unsigned int>()->default_value(heuristicDepth), "set the number of moves the decision tree should consider in advance [1-4]")
 		("noWindow", po::bool_switch(&noWindow), "disable the window that displays the grid")
+		("multithreading", po::bool_switch(&useMultithreading), "enable multithreading for AI computations")
 		;
 
 	po::variables_map vm;
@@ -128,7 +129,7 @@ int main(int argc, char* argv[])
 
 	// MAIN PROGRAM
 	DellacherieHeuristic chosenHeuristic;
-	std::shared_ptr<AIStrategy> strategy(std::make_shared<HeuristicStrategy>(chosenHeuristic, heuristicDepth));
+	std::shared_ptr<AIStrategy> strategy(std::make_shared<HeuristicStrategy>(chosenHeuristic, heuristicDepth, useMultithreading));
 	GameSequence gameSequence(width, height, polyominoSquares, strategy, stepsAhead);
 
 	std::vector<std::thread> threads;

@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(decision_tree_node_update_tree_tree) {
 	BOOST_CHECK_EQUAL(mixedCase->getNodeEvaluation(), -2.5);
 
 	// Build the next level of three by adding a new polyomino in the queue
-	mixedCase->updateTree(&(triominos[1]), depth, triominos, heuristic);
+	mixedCase->updateTree(&(triominos[1]), depth, triominos, heuristic, false);
 	mixedCaseStatus = mixedCase->getNodeStatus();
 	BOOST_CHECK_EQUAL(mixedCaseStatus[0]["GameStateNode"], 1);
 	BOOST_CHECK_EQUAL(mixedCaseStatus[1]["GameStateNode"], 12); // 12 possibilities for the L in this grid

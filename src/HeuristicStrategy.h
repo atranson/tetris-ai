@@ -12,7 +12,9 @@ namespace TetrisAI {
 	class HeuristicStrategy : public AIStrategy {
 
 	public:
-		HeuristicStrategy(Heuristic& heuristic, unsigned int depth) : heuristic(heuristic), depth(depth), decisionTreeRoot(nullptr) {}
+		HeuristicStrategy(Heuristic& heuristic, unsigned int depth, bool useMultithreading) : 
+			heuristic(heuristic), depth(depth), decisionTreeRoot(nullptr), useMultithreading(useMultithreading) {}
+
 		virtual Transformation decideMove(const GameState& gs, std::vector<Polyomino>& possiblePolyominos);
 
 	private:
@@ -21,6 +23,7 @@ namespace TetrisAI {
 		/// <summary>Heuristic that should be used to evaluate game states</summary>
 		Heuristic& heuristic;
 		unsigned int depth;
+		bool useMultithreading;
 		std::unique_ptr<DecisionTreeNode> decisionTreeRoot;
 	};
 
