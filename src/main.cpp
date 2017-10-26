@@ -19,13 +19,13 @@ void gameView(GameSequence& gameSequence, unsigned int refreshRate)
 		throw std::invalid_argument("Could not load font properly");
 	}
 
-	int squareSize(20), innerBorder(1), outerBorder(2);
-	GridView gridView(sf::Vector2u(squareSize, squareSize), outerBorder, innerBorder, gameSequence.getGridWidth(), gameSequence.getGridHeight());
+	unsigned short squareSize(20), innerBorder(1), outerBorder(2);
+	GridView gridView(sf::Vector2<unsigned short>(squareSize, squareSize), outerBorder, innerBorder, gameSequence.getGridWidth(), gameSequence.getGridHeight());
 	GameStatusView statsView(font, gameSequence.getGridWidth(), gameSequence.getGridHeight());
 
 	sf::Vector2u gridSize(gridView.getBlockSize());
 	sf::RenderWindow window(sf::VideoMode(240 + gridSize.x, gridSize.y), "Tetris AI");
-	statsView.setPosition(gridSize.x, 0);
+	statsView.setPosition((float)gridSize.x, 0);
 
 	while (window.isOpen())
 	{

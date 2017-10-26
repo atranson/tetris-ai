@@ -186,7 +186,7 @@ namespace TetrisAI {
 
 		float best(children[0]->getNodeEvaluation());
 		int bestIndex(0);
-		for (int i=1; i<children.size(); i++)
+		for (unsigned i = 1; i < children.size(); i++)
 		{
 			float childEvaluation(children[i]->getNodeEvaluation());
 			if (childEvaluation > best)

@@ -30,7 +30,7 @@ namespace TetrisAI {
 
 		/// <summary>Applies a transformation to the Polyomino and returns the resulting raw content</summary>
 		const std::vector<unsigned int> getTransformedPiece(Transformation t) const;
-		unsigned int getRotationCount() const;
+		int getRotationCount() const;
 
 	private:
 		/// <summary>Stores all sub states of the polyomino: one for each possible rotation</summary>

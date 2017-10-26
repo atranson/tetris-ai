@@ -24,13 +24,7 @@ namespace TetrisAI {
 	void GameSequence::playMove(Transformation transformation)
 	{
 		std::lock_guard<std::mutex> guard(mutex);
-		try {
-			gameState.play(transformation);
-		}
-		catch (std::invalid_argument)
-		{
-			;
-		}
+		gameState.play(transformation);
 	}
 
 	int GameSequence::getGridWidth() const
@@ -57,7 +51,7 @@ namespace TetrisAI {
 
 	void GameSequence::playGame()
 	{
-		srand(time(NULL));
+		srand(static_cast<unsigned int>(time(NULL)));
 		status = GameSequence::Status::Playing;
 		std::vector<Polyomino> polyominos(Polyomino::getPolyominosList(polyominoSquares));
 		stats.polyominosBreakdown = std::vector<unsigned int>(polyominos.size());
@@ -66,7 +60,7 @@ namespace TetrisAI {
 		int currentPolyominoIndex(0);
 		
 		// Draw in advance a certain amount of polyominos
-		for (int i = 0; i < stepsAhead; i++)
+		for (unsigned i = 0; i < stepsAhead; i++)
 		{
 			currentPolyominoIndex = rand() % polyominos.size();
 			gameState.addPolyominoToQueue(&(polyominos[currentPolyominoIndex]));

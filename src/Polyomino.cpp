@@ -96,7 +96,7 @@ namespace TetrisAI {
 		return getRotatedPiece(t.rotation).getTranslatedState(t.translation);
 	}
 
-	unsigned int Polyomino::getRotationCount() const
+	int Polyomino::getRotationCount() const
 	{
 		return rotatedPieces.size();
 	}

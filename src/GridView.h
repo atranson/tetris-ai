@@ -11,7 +11,7 @@ public:
 	static const sf::Color fullTileColor;
 	static const sf::Color emptyTileColor;
 
-	GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned int innerBorderSize, unsigned int width, unsigned int height);
+	GridView(sf::Vector2<unsigned short> tileSize, unsigned short outerBorderSize, unsigned short innerBorderSize, unsigned short width, unsigned short height);
 	void refreshGrid(const std::vector<unsigned int>& gridContent);
 	sf::Vector2u getBlockSize() const;
 
@@ -20,10 +20,10 @@ private:
 	sf::Vertex* getTileQuadPointer(unsigned int row, unsigned int col);
 
 	sf::VertexArray vertices;
-	unsigned int width;
-	unsigned int height;
-	unsigned int outerBorderSize;
-	unsigned int innerBorderSize;
+	unsigned short width;
+	unsigned short height;
+	unsigned short outerBorderSize;
+	unsigned short innerBorderSize;
 
 	sf::Vector2u drawableBlockSize;
 };

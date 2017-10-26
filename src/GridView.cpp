@@ -5,7 +5,7 @@ const sf::Color GridView::innerBorderColor = sf::Color(128, 128, 128);
 const sf::Color GridView::fullTileColor = sf::Color(16, 16, 16);
 const sf::Color GridView::emptyTileColor = sf::Color(255, 255, 255);
 
-GridView::GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned int innerBorderSize, unsigned int width, unsigned int height) : 
+GridView::GridView(sf::Vector2<unsigned short> tileSize, unsigned short outerBorderSize, unsigned short innerBorderSize, unsigned short width, unsigned short height) :
 	width(width), height(height), outerBorderSize(outerBorderSize), innerBorderSize(innerBorderSize)
 {
 	vertices.setPrimitiveType(sf::Quads);
@@ -16,14 +16,14 @@ GridView::GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned
 	sf::Vertex* innerZone = &vertices[4];
 
 	outerZone[0].position = sf::Vector2f(0, 0);
-	outerZone[1].position = sf::Vector2f(outerBorderSize * 2 + width * (tileSize.x + innerBorderSize) - innerBorderSize, 0);
-	outerZone[2].position = sf::Vector2f(outerBorderSize * 2 + width * (tileSize.x + innerBorderSize) - innerBorderSize, outerBorderSize * 2 + height * (tileSize.y + innerBorderSize) - innerBorderSize);
-	outerZone[3].position = sf::Vector2f(0, outerBorderSize * 2 + height * (tileSize.y + innerBorderSize) - innerBorderSize);
+	outerZone[1].position = sf::Vector2f(static_cast<float>(outerBorderSize * 2 + width * (tileSize.x + innerBorderSize) - innerBorderSize), 0);
+	outerZone[2].position = sf::Vector2f(static_cast<float>(outerBorderSize * 2 + width * (tileSize.x + innerBorderSize) - innerBorderSize), static_cast<float>(outerBorderSize * 2 + height * (tileSize.y + innerBorderSize) - innerBorderSize));
+	outerZone[3].position = sf::Vector2f(0, static_cast<float>(outerBorderSize * 2 + height * (tileSize.y + innerBorderSize) - innerBorderSize));
 
 	innerZone[0].position = sf::Vector2f(outerBorderSize, outerBorderSize);
-	innerZone[1].position = sf::Vector2f(outerBorderSize + width * (tileSize.x + innerBorderSize) - innerBorderSize, outerBorderSize);
-	innerZone[2].position = sf::Vector2f(outerBorderSize + width * (tileSize.x + innerBorderSize) - innerBorderSize, outerBorderSize + height * (tileSize.y + innerBorderSize) - innerBorderSize);
-	innerZone[3].position = sf::Vector2f(outerBorderSize, outerBorderSize + height * (tileSize.y + innerBorderSize) - innerBorderSize);
+	innerZone[1].position = sf::Vector2f(static_cast<float>(outerBorderSize + width * (tileSize.x + innerBorderSize) - innerBorderSize), outerBorderSize);
+	innerZone[2].position = sf::Vector2f(static_cast<float>(outerBorderSize + width * (tileSize.x + innerBorderSize) - innerBorderSize), static_cast<float>(outerBorderSize + height * (tileSize.y + innerBorderSize) - innerBorderSize));
+	innerZone[3].position = sf::Vector2f(outerBorderSize, static_cast<float>(outerBorderSize + height * (tileSize.y + innerBorderSize) - innerBorderSize));
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -43,10 +43,10 @@ GridView::GridView(sf::Vector2u tileSize, unsigned int outerBorderSize, unsigned
 
 			int swappedXIndex = width - 1 - col;
 			// define the position of each of its corners
-			quad[0].position = sf::Vector2f(outerBorderSize + swappedXIndex * (tileSize.x + innerBorderSize), outerBorderSize + swappedYIndex * (tileSize.y + innerBorderSize));
-			quad[1].position = sf::Vector2f(outerBorderSize + (swappedXIndex + 1) * (tileSize.x + innerBorderSize) - innerBorderSize, outerBorderSize + swappedYIndex * (tileSize.y + innerBorderSize));
-			quad[2].position = sf::Vector2f(outerBorderSize + (swappedXIndex + 1) * (tileSize.x + innerBorderSize) - innerBorderSize, outerBorderSize + (swappedYIndex + 1) * (tileSize.y + innerBorderSize) - innerBorderSize);
-			quad[3].position = sf::Vector2f(outerBorderSize + swappedXIndex * (tileSize.x + innerBorderSize), outerBorderSize + (swappedYIndex + 1) * (tileSize.y + innerBorderSize) - innerBorderSize);
+			quad[0].position = sf::Vector2f(static_cast<float>(outerBorderSize + swappedXIndex * (tileSize.x + innerBorderSize)), static_cast<float>(outerBorderSize + swappedYIndex * (tileSize.y + innerBorderSize)));
+			quad[1].position = sf::Vector2f(static_cast<float>(outerBorderSize + (swappedXIndex + 1) * (tileSize.x + innerBorderSize) - innerBorderSize), static_cast<float>(outerBorderSize + swappedYIndex * (tileSize.y + innerBorderSize)));
+			quad[2].position = sf::Vector2f(static_cast<float>(outerBorderSize + (swappedXIndex + 1) * (tileSize.x + innerBorderSize) - innerBorderSize), static_cast<float>(outerBorderSize + (swappedYIndex + 1) * (tileSize.y + innerBorderSize) - innerBorderSize));
+			quad[3].position = sf::Vector2f(static_cast<float>(outerBorderSize + swappedXIndex * (tileSize.x + innerBorderSize)), static_cast<float>(outerBorderSize + (swappedYIndex + 1) * (tileSize.y + innerBorderSize) - innerBorderSize));
 
 			// Default color is white (empty tile)
 			for (int i = 0; i < 4; i++)

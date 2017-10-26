@@ -51,7 +51,7 @@ namespace TetrisAI {
 		topHeight = (landingTopHeight > topHeight) ? landingTopHeight : topHeight;
 
 		// Browse the rows of the grid that must change and clear complete lines if needed
-		for (int h = 0; h < piece.size(); h++)
+		for (unsigned h = 0; h < piece.size(); h++)
 		{
 			int currentRow = result.landingRow + h - result.linesCleared;
 			content[currentRow] = piece[h] | content[currentRow];
@@ -91,7 +91,7 @@ namespace TetrisAI {
 		}
 
 		// THEN: we check if it's a game over situation, if it is we return -1, else we return the lowest row where the piece would fit
-		return (landingRow + piece.size() > getHeight()) ? -1 : landingRow;
+		return (landingRow + (int)(piece.size()) > getHeight()) ? -1 : landingRow;
 	}
 
 	bool Grid::isPieceTranslationValid(const std::vector<unsigned int>& piece) const
@@ -117,9 +117,9 @@ namespace TetrisAI {
 		return (1 << getWidth()) - 1;
 	}
 
-	void Grid::removeRow(unsigned int index)
+	void Grid::removeRow(unsigned int row)
 	{
-		for (; index < getHeight() - 1; index++)
+		for (int index = row; index < getHeight() - 1; index++)
 		{
 			content[index] = content[index + 1];
 		}
