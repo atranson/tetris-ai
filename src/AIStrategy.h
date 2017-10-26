@@ -3,6 +3,7 @@
 
 #include "Polyomino.h"
 #include "GameState.h"
+#include <vector>
 
 namespace TetrisAI {
 

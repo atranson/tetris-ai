@@ -1,7 +1,6 @@
 #include "PolyominoState.h"
 #include <algorithm>
 #include <stdexcept>
-#include <iostream>
 
 namespace TetrisAI {
 	PolyominoState::PolyominoState(std::vector<unsigned int> content) : content(content) 

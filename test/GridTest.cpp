@@ -1,6 +1,5 @@
 #include <boost/test/unit_test.hpp>
 #include "Grid.h"
-#include "GridTools.h"
 #include "Polyomino.h"
 #include <vector>
 

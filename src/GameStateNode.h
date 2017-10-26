@@ -3,8 +3,6 @@
 
 #include "DecisionTreeNode.h"
 #include "GameState.h"
-#include <memory>
-#include <vector>
 
 namespace TetrisAI {
 

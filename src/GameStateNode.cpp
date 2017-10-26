@@ -2,7 +2,6 @@
 #include "PolyominoNode.h"
 #include <stdexcept>
 #include <thread>
-#include <iostream>
 
 namespace TetrisAI {
 

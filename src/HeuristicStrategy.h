@@ -1,8 +1,6 @@
 #ifndef TETRISAI_HEURISTICSTRATEGY_H
 #define TETRISAI_HEURISTICSTRATEGY_H
 
-#include "Polyomino.h"
-#include "GameState.h"
 #include "AIStrategy.h"
 #include "Heuristic.h"
 #include "DecisionTreeNode.h"

@@ -6,7 +6,6 @@
 #include "Polyomino.h"
 #include "MoveResult.h"
 #include "Grid.h"
-#include "GridTools.h"
 
 namespace TetrisAI {
 

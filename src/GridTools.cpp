@@ -1,6 +1,4 @@
-#include <vector>
 #include "GridTools.h"
-#include "Grid.h"
 
 namespace TetrisAI {
 

@@ -1,5 +1,4 @@
 #include "GameState.h"
-#include <algorithm>
 
 namespace TetrisAI {
 
