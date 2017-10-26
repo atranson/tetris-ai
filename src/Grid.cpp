@@ -7,11 +7,11 @@ namespace TetrisAI {
 
 	Grid::Grid(short w, short h) : width(w), topHeight(0)
 	{
-		if (w > 32 || h > 32)
+		if (w > Grid::maxSize || h > Grid::maxSize)
 		{
 			throw std::invalid_argument("A grid can't exceed 32 in width or 32 in height.");
 		}
-		if (w < 4 || h < 4)
+		if (w < Grid::minSize || h < Grid::minSize)
 		{
 			throw std::invalid_argument("A grid must be at least 4 blocks wide and 4 blocks high.");
 		}

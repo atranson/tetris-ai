@@ -4,6 +4,15 @@
 
 namespace TetrisAI {
 
+	HeuristicStrategy::HeuristicStrategy(Heuristic& heuristic, unsigned int depth, bool useMultithreading) :
+		heuristic(heuristic), depth(depth), decisionTreeRoot(nullptr), useMultithreading(useMultithreading)
+	{
+		if (depth > maxDepth)
+		{
+			throw std::invalid_argument("This implementation does not allow decision trees to consider more than 4 moves at once.");
+		}
+	}
+
 	Transformation HeuristicStrategy::decideMove(const GameState& gs, std::vector<Polyomino>& possiblePolyominos)
 	{
 		// If the tree has not been initialized

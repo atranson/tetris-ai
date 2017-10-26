@@ -10,7 +10,8 @@ namespace TetrisAI {
 	class Grid {
 
 	public:
-		const static int sizeLimit = 32;
+		const static int maxSize = 32;
+		const static int minSize = 4;
 
 		Grid(short w, short h);
 		Grid(const Grid &original);

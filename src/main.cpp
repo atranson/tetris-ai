@@ -2,6 +2,7 @@
 #include <iostream>
 #include "GameSequence.h"
 #include "GridView.h"
+#include "Grid.h"
 #include "GameStatusView.h"
 #include "DellacherieHeuristic.h"
 #include "HeuristicStrategy.h"
@@ -91,24 +92,24 @@ int main(int argc, char* argv[])
 		if (vm.count("heuristicDepth")) { heuristicDepth = vm["heuristicDepth"].as<unsigned int>(); }
 
 		// Checking values ranges
-		if (height < 4 || height > 32 || width < 4 || width > 32)
+		if (height < Grid::minSize || height > Grid::maxSize || width < Grid::minSize || width > Grid::maxSize)
 		{
-			std::cout << "Grid size out of range [4-32]" << std::endl;
+			std::cout << "Grid size out of range [" << Grid::minSize << "-" << Grid::maxSize << "]" << std::endl;
 			return 1;
 		}
-		if (polyominoSquares < 1 || polyominoSquares > 5)
+		if (polyominoSquares < 1 || polyominoSquares > Polyomino::maxSquares)
 		{
-			std::cout << "Polyomino size out of range [1-5]" << std::endl;
+			std::cout << "Polyomino size out of range [1-" << Polyomino::maxSquares << "]" << std::endl;
 			return 1;
 		}
-		if (stepsAhead < 0 || stepsAhead > 5)
+		if (stepsAhead < 0 || stepsAhead > GameSequence::maxStepsAhead)
 		{
-			std::cout << "Steps ahead parameter out of range [0-5]" << std::endl;
+			std::cout << "Steps ahead parameter out of range [0-" << GameSequence::maxStepsAhead << "]" << std::endl;
 			return 1;
 		}
-		if (heuristicDepth < 1 || heuristicDepth > 4)
+		if (heuristicDepth < 1 || heuristicDepth > HeuristicStrategy::maxDepth)
 		{
-			std::cout << "Heuristic depth parameter out of range [1-4]" << std::endl;
+			std::cout << "Heuristic depth parameter out of range [1-" << HeuristicStrategy::maxDepth << "]" << std::endl;
 			return 1;
 		}
 

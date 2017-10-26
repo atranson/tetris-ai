@@ -1,8 +1,20 @@
 #include "GameSequence.h"
 #include <time.h> 
 #include <iostream>
+#include <stdexcept>
 
 namespace TetrisAI {
+
+	GameSequence::GameSequence(short gridWidth, short gridHeight, unsigned int polyominoSquares, std::shared_ptr<AIStrategy> strategy, unsigned int stepsAhead) :
+		gridWidth(gridWidth), gridHeight(gridHeight), polyominoSquares(polyominoSquares),
+		strategy(strategy), stats(polyominoSquares), status(Status::New),
+		gameState(gridWidth, gridHeight), stepsAhead(stepsAhead)
+	{
+		if (stepsAhead > maxStepsAhead)
+		{
+			throw std::invalid_argument("The number of polyominos known in advance is too big");
+		}
+	}
 
 	const GameStatistics GameSequence::getStats() const
 	{

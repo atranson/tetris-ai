@@ -28,17 +28,15 @@ namespace TetrisAI {
 	class GameSequence {
 
 	public:
+		const static unsigned maxStepsAhead = 5;
+
 		enum Status {
 			New,
 			Playing,
 			GameOver
 		};
 
-		GameSequence(short gridWidth, short gridHeight, unsigned int polyominoSquares, std::shared_ptr<AIStrategy> strategy, unsigned int stepsAhead) :
-			gridWidth(gridWidth), gridHeight(gridHeight), polyominoSquares(polyominoSquares), 
-			strategy(strategy), stats(polyominoSquares), status(Status::New),
-			gameState(gridWidth, gridHeight), stepsAhead(stepsAhead)
-			{}
+		GameSequence(short gridWidth, short gridHeight, unsigned int polyominoSquares, std::shared_ptr<AIStrategy> strategy, unsigned int stepsAhead);
 
 		// Those getters return values since we may have concurrency problem
 		const GameStatistics getStats() const;
