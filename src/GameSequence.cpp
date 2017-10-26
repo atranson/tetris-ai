@@ -68,7 +68,6 @@ namespace TetrisAI {
 		std::vector<Polyomino> polyominos(Polyomino::getPolyominosList(polyominoSquares));
 		stats.polyominosBreakdown = std::vector<unsigned int>(polyominos.size());
 
-		// We know two pieces in advance, thus we add one here
 		int currentPolyominoIndex(0);
 		
 		// Draw in advance a certain amount of polyominos

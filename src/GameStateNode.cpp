@@ -8,7 +8,9 @@ namespace TetrisAI {
 
 	GameStateNode::GameStateNode(const GameState& gameState, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic) : gameState(gameState) 
 	{ 
+		// We first build the children (which will trigger their own evaluation)
 		buildChildren(depth, possiblePolyominos, heuristic); 
+		// Then we compute the evaluation of the node
 		updateNodeEvaluation(heuristic);
 	}
 
@@ -29,9 +31,10 @@ namespace TetrisAI {
 
 		GameState newBaseGameState = gameState; // Copy game state
 		Polyomino* comingPolyomino(newBaseGameState.polyominoQueueHead()); // Retrieve next polyomino
-		// If the queue was empty
+		// If the queue was empty, we don't know what's next
 		if (comingPolyomino == nullptr)
 		{
+			// We consider every possible polyomino and create a subtree for each one of them
 			children.reserve(possiblePolyominos.size());
 			for (auto& p : possiblePolyominos)
 			{
@@ -40,6 +43,7 @@ namespace TetrisAI {
 		}
 		else
 		{
+			// If not, we know what polyomino we have to consider
 			Transformation t;
 			int gridWidth(newBaseGameState.getGrid().getWidth());
 			// Test each possible move for the given polyomino and keep the one that has the best evaluation
@@ -73,12 +77,17 @@ namespace TetrisAI {
 
 		if (children.empty())
 		{
+			// If the node has no children, we simply have to build them
 			buildChildren(depth, possiblePolyominos, heuristic);
 		}
 		else
 		{
+			// If not, we have to handle two cases
+
+			// If the next polyomino was unknown before and is known now
 			if (queueSizeBeforeUpdate == 0 && newPolyomino != nullptr)
 			{
+				// Then we search in the children for a PolyominoNode that considered the right case
 				std::unique_ptr<DecisionTreeNode> matchingChild(nullptr);
 				while(!children.empty() && matchingChild == nullptr)
 				{
@@ -94,11 +103,13 @@ namespace TetrisAI {
 					throw std::runtime_error("Error:  could not find a match for a certain polyomino in the tree decision. Tree state unexpected. This layer should be composed of PolyominoNodes with one for each possible polyomino.");
 				}
 
+				// We then replace this node's children by the children of the PolyominoNode that matched
 				children.clear();
 				matchingChild->movingChildrenOwnership(children);
 				newPolyomino = nullptr; // Polyomino has been "used" at this level of depth
 			}
 
+			// For the next step, we recursively call updateTree on the children of this node
 			if (useMultithreading)
 			{
 				unsigned nbSubThreads(std::thread::hardware_concurrency());
@@ -108,7 +119,7 @@ namespace TetrisAI {
 					nbSubThreads = children.size();
 				}
 
-				//std::cout << "Spawning thread children (" << nbSubThreads << " for " << children.size() << " children)" << std::endl;
+				// Split up the work between a number of sub threads
 				std::vector<std::thread> subThreads;
 				subThreads.reserve(nbSubThreads);
 				unsigned extras(r);
@@ -124,6 +135,7 @@ namespace TetrisAI {
 					}
 				}
 
+				// Wait for each thread to finish
 				for (auto& t : subThreads)
 				{
 					t.join();
@@ -137,6 +149,8 @@ namespace TetrisAI {
 				}
 			}
 		}
+
+		// Finally, we update the node evaluation since its children have been updated as well
 		updateNodeEvaluation(heuristic);
 	}
 
@@ -156,7 +170,7 @@ namespace TetrisAI {
 		}
 		else
 		{
-			// Actualize the evaluation of the node based on its children
+			// Update the evaluation of the node based on its children
 			float childrenEvaluation(0); // Initialize the evaluation of the node
 			int childNodePosition(0);
 			for (auto& child : children)

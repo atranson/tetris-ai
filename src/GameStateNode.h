@@ -25,10 +25,15 @@ namespace TetrisAI {
 	private:
 		float nodeEvaluation;
 		GameState gameState;
+		/// <summary>Holds an homogeneous collection (by construction) of concrete DecisionTreeNodes</summary>
 		std::vector<std::unique_ptr<DecisionTreeNode>> children;
 
 		void buildChildren(int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 		void updateNodeEvaluation(Heuristic& heuristic);
+
+		/// <summary>Call updateTree on a subset of children</summary>
+		/// <param name="from">Index of the first child</param>
+		/// <param name="to">Index of the last child</param>
 		void updateSubTree(unsigned from, unsigned to, Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
 	};
 

@@ -9,6 +9,14 @@
 
 namespace TetrisAI {
 
+	/// <summary>
+	/// This class of nodes is meant to handle moves for which the polyomino is yet unknown.
+	/// It considers one of the potential polyomino that could be drawn and builds from there
+	/// a sub tree of possibilities (thus, this can't be a leaf nor a root)
+	///
+	/// It is meant to be destroyed or hand over the children of its subRoot once the polyomino corresponding
+	/// to that move is eventually known.
+	/// </summary>
 	class PolyominoNode : public DecisionTreeNode {
 
 	public:
@@ -24,7 +32,9 @@ namespace TetrisAI {
 		virtual float computeSiblingsEvaluation(float currentEvaluation, unsigned nodePosition);
 
 	private:
+		/// <summary>Polyomino that is considered for this node and its children</summary>
 		Polyomino* polyomino;
+		/// <summary>Sub decision tree based on the case where the next polyomino is the one referenced in this instance</summary>
 		std::unique_ptr<GameStateNode> subRoot;
 	};
 

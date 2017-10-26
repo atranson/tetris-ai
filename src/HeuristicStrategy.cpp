@@ -34,13 +34,8 @@ namespace TetrisAI {
 			}
 		}
 
-		DecisionTreeNode::NodeStatus status(decisionTreeRoot->getNodeStatus());
-		;
 		// Replace the root by its best child (trigger deletion of siblings and their subtrees)
 		decisionTreeRoot = decisionTreeRoot->extractBestChild();
-
-		status  = decisionTreeRoot->getNodeStatus();
-		;
 
 		if (decisionTreeRoot->isGameOver())
 		{

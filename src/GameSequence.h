@@ -54,12 +54,17 @@ namespace TetrisAI {
 
 		/// <summary>Number of squares that should compose the polyominos used for the game</summary>
 		unsigned int polyominoSquares;
+		/// <summary>Number of polyominos known in advance during the game (e.g. if set to 0, the next polyomino is unknown)</summary>
 		unsigned int stepsAhead;
 		short gridWidth;
 		short gridHeight;
 		std::shared_ptr<AIStrategy> strategy;
+
+		/// <summary>Holds statistics about the game being played</summary>
 		GameStatistics stats;
+		/// <summary>Stores the current state of the game being played</summary>
 		GameState gameState;
+		/// <summary>Stores the current status of the game being played</summary>
 		std::atomic<Status> status;
 
 		void playMove(Transformation transformation);

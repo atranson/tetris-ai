@@ -11,11 +11,13 @@ namespace TetrisAI {
 
 		/// <summary>Outputs a value that grades the given GameState</summary>
 		/// <param name="gs">Game state that should be evaluated</param>
-		/// <param name="stopValue">Threshold value that can be used to stop the computation if the output value falls below</param>
-		/// <param name="useStopValue">Indicates if the computation should be stopped based on the stopValue</param>
 		/// <returns>Evaluation of the game state</returns>
 		virtual float evaluate(const GameState& gs) = 0;
 
+		/// <summary>Outputs a value that grades the given GameState while considering its children's evaluation</summary>
+		/// <param name="gs">Game state that should be evaluated</param>
+		/// <param name="childrenEvaluation">Evaluation of the children of the corresponding GameStateNode</param>
+		/// <returns>Evaluation of the game state that includes its children's evaluation</returns>
 		virtual float evaluateBranch(const GameState& gs, float childrenEvaluation) = 0;
 	};
 
