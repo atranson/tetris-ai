@@ -33,6 +33,14 @@ namespace TetrisAI {
 		/// <param name="from">Index of the first child</param>
 		/// <param name="to">Index of the last child</param>
 		void updateSubTree(unsigned from, unsigned to, Polyomino* newPolyomino, int depth, std::vector<Polyomino>& possiblePolyominos, Heuristic& heuristic);
+
+		/// <summary>
+		/// Find a branch among children that matches the given polyomino (i.e. a PolyominoNode that considered moves with the given polyomino)
+		/// and keep this branch only (by removing other children and retrieving the ownership of the children of the matching child)
+		/// </summary>
+		/// <param name="matchingPolyomino">Polyomino whose branch should be kept</param>
+		/// <returns>True if a branch matching the given polyomino could be found to perform the trimming process. False if not</returns>
+		bool trimBranches(Polyomino* matchingPolyomino);
 	};
 
 }

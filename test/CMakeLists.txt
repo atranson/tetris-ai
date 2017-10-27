@@ -12,7 +12,7 @@ add_executable (AIUnitTest
 	PolyominoStateTest.cpp
 	PolyominoTest.cpp
 	GridTest.cpp
-	GridToolsTest.cpp
+	UtilitiesTest.cpp
 	DecisionTreeNodeTest.cpp
 )
 target_link_libraries (AIUnitTest

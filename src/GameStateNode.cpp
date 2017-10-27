@@ -2,6 +2,7 @@
 #include "PolyominoNode.h"
 #include <stdexcept>
 #include <thread>
+#include "Utilities.h"
 
 namespace TetrisAI {
 
@@ -81,57 +82,30 @@ namespace TetrisAI {
 		}
 		else
 		{
-			// If not, we have to handle two cases
-
 			// If the next polyomino was unknown before and is known now
 			if (queueSizeBeforeUpdate == 0 && newPolyomino != nullptr)
 			{
-				// Then we search in the children for a PolyominoNode that considered the right case
-				std::unique_ptr<DecisionTreeNode> matchingChild(nullptr);
-				while(!children.empty() && matchingChild == nullptr)
-				{
-					if (children.back()->matchPolyomino(newPolyomino))
-					{
-						matchingChild = std::move(children.back());
-					}
-					children.pop_back();
-				}
-
-				if (matchingChild == nullptr)
+				if (!trimBranches(newPolyomino))
 				{
 					throw std::runtime_error("Error:  could not find a match for a certain polyomino in the tree decision. Tree state unexpected. This layer should be composed of PolyominoNodes with one for each possible polyomino.");
 				}
-
-				// We then replace this node's children by the children of the PolyominoNode that matched
-				children.clear();
-				matchingChild->movingChildrenOwnership(children);
 				newPolyomino = nullptr; // Polyomino has been "used" at this level of depth
 			}
 
 			// For the next step, we recursively call updateTree on the children of this node
 			if (useMultithreading)
 			{
-				unsigned nbSubThreads(std::thread::hardware_concurrency());
-				unsigned q(children.size() / nbSubThreads), r(children.size() % nbSubThreads);
-				if (children.size() < nbSubThreads)
-				{
-					nbSubThreads = children.size();
-				}
-
+				std::vector<int> splitRangesBounds(splitRange(0, children.size(), std::thread::hardware_concurrency()));
+				
 				// Split up the work between a number of sub threads
 				std::vector<std::thread> subThreads;
-				subThreads.reserve(nbSubThreads);
-				unsigned extras(r);
-				for (unsigned i = 0; i < nbSubThreads; i++)
+				subThreads.reserve(splitRangesBounds.size() - 1);
+				for (unsigned i = 0; i < splitRangesBounds.size() - 1; i++)
 				{
 					subThreads.push_back(std::thread(&GameStateNode::updateSubTree, this,
-						i*q + r-extras,
-						(i+1)*q - 1 + r-extras + (extras != 0 ? 1 : 0),
-						newPolyomino, depth - 1, std::ref(possiblePolyominos), std::ref(heuristic)
+						splitRangesBounds[i], splitRangesBounds[i+1] - 1,
+						newPolyomino, depth, std::ref(possiblePolyominos), std::ref(heuristic)
 					));
-					if (extras > 0) {
-						extras--;
-					}
 				}
 
 				// Wait for each thread to finish
@@ -142,10 +116,7 @@ namespace TetrisAI {
 			}
 			else
 			{
-				for (auto& child : children)
-				{
-					child->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic, false);
-				}
+				updateSubTree(0, children.size() - 1, newPolyomino, depth, possiblePolyominos, heuristic);
 			}
 		}
 
@@ -157,8 +128,32 @@ namespace TetrisAI {
 	{
 		for (unsigned i = from; i <= to; i++)
 		{
-			children[i]->updateTree(newPolyomino, depth, possiblePolyominos, heuristic, false);
+			children[i]->updateTree(newPolyomino, depth - 1, possiblePolyominos, heuristic, false);
 		}
+	}
+
+	bool GameStateNode::trimBranches(Polyomino* matchingPolyomino)
+	{
+		// Search among children for a PolyominoNode that considered the case where "matchingPolyomino" is played
+		std::unique_ptr<DecisionTreeNode> matchingChild(nullptr);
+		while (!children.empty() && matchingChild == nullptr)
+		{
+			if (children.back()->matchPolyomino(matchingPolyomino))
+			{
+				matchingChild = std::move(children.back());
+			}
+			children.pop_back();
+		}
+
+		if (matchingChild == nullptr)
+		{
+			return false;
+		}
+
+		// We then replace this node's children by the children of the PolyominoNode that matched
+		children.clear();
+		matchingChild->movingChildrenOwnership(children);
+		return true;
 	}
 
 	void GameStateNode::updateNodeEvaluation(Heuristic& heuristic)

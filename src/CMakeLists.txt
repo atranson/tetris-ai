@@ -2,7 +2,7 @@ add_library (TetrisAI
 	PolyominoState.cpp PolyominoState.h
 	Polyomino.cpp Polyomino.h
 	MoveResult.h
-	GridTools.cpp GridTools.h
+	Utilities.cpp Utilities.h
 	Grid.cpp Grid.h
 	GameState.cpp GameState.h
 	AIStrategy.h

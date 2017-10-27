@@ -1,7 +1,7 @@
 #include "Grid.h"
 #include <stdexcept>
 #include <algorithm>
-#include "GridTools.h"
+#include "Utilities.h"
 
 namespace TetrisAI {
 
